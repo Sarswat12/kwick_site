@@ -15,9 +15,8 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'Battery Map', href: '/battery-map' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Careers', href: '/careers' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
