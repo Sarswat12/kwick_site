@@ -45,7 +45,7 @@ const App = () => (
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
           <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
-          <Route path="/admin/payments" element={<AdminLayout><PlaceholderPage pageName="Payment Management" /></AdminLayout>} />
+          <Route path="/admin/payments" element={<AdminLayout><AdminPayments /></AdminLayout>} />
           <Route path="/admin/kyc" element={<AdminLayout><PlaceholderPage pageName="KYC Management" /></AdminLayout>} />
           <Route path="/admin/fleet" element={<AdminLayout><PlaceholderPage pageName="Fleet Management" /></AdminLayout>} />
           <Route path="/admin/iot" element={<AdminLayout><PlaceholderPage pageName="IoT Devices" /></AdminLayout>} />
