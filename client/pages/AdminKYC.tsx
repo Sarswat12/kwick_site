@@ -97,7 +97,7 @@ export default function AdminKYC() {
       const queryParams = new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
-        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== ''))
+        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== '' && value !== 'all'))
       });
 
       const response = await fetch(`/api/admin/kyc?${queryParams}`, {
@@ -208,7 +208,7 @@ export default function AdminKYC() {
     const labels = {
       driving_license: getText('Driving License', 'ड्राइविंग लाइसेंस'),
       aadhaar: getText('Aadhaar Card', 'आधार कार्ड'),
-      address_proof: getText('Address Proof', 'पता प्रमाण')
+      address_proof: getText('Address Proof', 'पता प्रमा��')
     };
     return labels[type as keyof typeof labels] || type;
   };
@@ -334,7 +334,7 @@ export default function AdminKYC() {
                   <SelectValue placeholder={getText('All Status', 'सभी स्थितियां')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{getText('All Status', 'सभी स्थि��ियां')}</SelectItem>
+                  <SelectItem value="all">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
                   <SelectItem value="pending">{getText('Pending', 'लंबित')}</SelectItem>
                   <SelectItem value="approved">{getText('Approved', 'अनुमोदित')}</SelectItem>
                   <SelectItem value="rejected">{getText('Rejected', 'अस्वीकृत')}</SelectItem>
@@ -663,7 +663,7 @@ export default function AdminKYC() {
                                   <div>
                                     <h4 className="font-medium">{getDocumentTypeLabel(doc.type)}</h4>
                                     <p className="text-sm text-gray-500">
-                                      {getText('Submitted:', 'जमा कि���ा गया:')} {formatDate(doc.submittedAt)}
+                                      {getText('Submitted:', 'जमा किया गया:')} {formatDate(doc.submittedAt)}
                                     </p>
                                   </div>
                                 </div>
@@ -730,7 +730,7 @@ export default function AdminKYC() {
                       </Label>
                       <Textarea
                         id="reviewNotes"
-                        placeholder={getText('Add any additional comments...', 'कोई अतिरिक्त टिप्प��ी जोड़ें...')}
+                        placeholder={getText('Add any additional comments...', 'कोई अतिरिक्त टिप्पणी जोड़ें...')}
                         value={reviewNotes}
                         onChange={(e) => setReviewNotes(e.target.value)}
                         rows={3}
