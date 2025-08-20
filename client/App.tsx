@@ -14,12 +14,14 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Account from "./pages/Account";
+import BatteryMap from "./pages/BatteryMap";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminPayments from "./pages/AdminPayments";
 import AdminKYC from "./pages/AdminKYC";
 import AdminFleet from "./pages/AdminFleet";
+import AdminContent from "./pages/AdminContent";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import NotFound from "./pages/NotFound";
 
