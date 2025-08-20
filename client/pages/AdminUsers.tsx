@@ -253,7 +253,7 @@ export default function AdminUsers() {
                   <SelectValue placeholder={getText('All Status', 'सभी स्थितियां')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
+                  <SelectItem value="all">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
                   <SelectItem value="active">{getText('Active', 'सक्रिय')}</SelectItem>
                   <SelectItem value="suspended">{getText('Suspended', 'निलंबित')}</SelectItem>
                   <SelectItem value="blocked">{getText('Blocked', 'अवरुद्ध')}</SelectItem>
@@ -268,7 +268,7 @@ export default function AdminUsers() {
                   <SelectValue placeholder={getText('All KYC', 'सभी केवाईसी')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{getText('All KYC', 'सभी केवाईसी')}</SelectItem>
+                  <SelectItem value="all">{getText('All KYC', 'सभी केवाईसी')}</SelectItem>
                   <SelectItem value="pending">{getText('Pending', 'लंबित')}</SelectItem>
                   <SelectItem value="approved">{getText('Approved', 'अनुमोदित')}</SelectItem>
                   <SelectItem value="rejected">{getText('Rejected', 'अस्वीकृत')}</SelectItem>
@@ -283,7 +283,7 @@ export default function AdminUsers() {
                   <SelectValue placeholder={getText('All Cities', 'सभी शहर')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{getText('All Cities', 'सभी शहर')}</SelectItem>
+                  <SelectItem value="all">{getText('All Cities', 'सभी शहर')}</SelectItem>
                   {cities.map(city => (
                     <SelectItem key={city} value={city}>{city}</SelectItem>
                   ))}
@@ -308,7 +308,7 @@ export default function AdminUsers() {
         <CardHeader>
           <CardTitle>{getText('Users', 'उपयोगकर्ता')} ({users.length})</CardTitle>
           <CardDescription>
-            {getText('Manage user accounts and their status', 'उपयोगकर्���ा खातों और उनकी स्थिति का प्रबंधन करें')}
+            {getText('Manage user accounts and their status', '��पयोगकर्���ा खातों और उनकी स्थिति का प्रबंधन करें')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -555,7 +555,7 @@ export default function AdminUsers() {
                       setIsEditDialogOpen(false);
                     }}
                   >
-                    {getText('Activate User', 'उपयोगकर्ता को ���क्रिय करें')}
+                    {getText('Activate User', '���पयोगकर्ता को ���क्रिय करें')}
                   </Button>
                 )}
                 <Button
