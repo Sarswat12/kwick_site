@@ -16,36 +16,124 @@ import {
   TrendingUp,
   ArrowRight,
   Play,
-  CheckCircle
+  CheckCircle,
+  IndianRupee,
+  Bike,
+  Package,
+  Timer,
+  Award,
+  Phone,
+  Navigation,
+  DollarSign,
+  Target,
+  Truck,
+  Sun,
+  Recycle
 } from 'lucide-react';
 
 export default function Index() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   const benefits = [
-    { icon: Zap, title: "Instant Booking", description: "Book your EV in under 2 minutes" },
-    { icon: Battery, title: "Unlimited Swaps", description: "Free battery swapping at 500+ stations" },
-    { icon: Shield, title: "Zero Maintenance", description: "No servicing, no repairs, no hassle" },
-    { icon: CreditCard, title: "Flexible Payment", description: "Daily, weekly, monthly plans available" }
+    { icon: DollarSign, title: "Earn ₹50,000/Month", description: "Turn your rental into a profitable delivery business", color: "text-green-600" },
+    { icon: Battery, title: "Unlimited Battery Swaps", description: "Free swapping at 50+ stations across NCR", color: "text-blue-600" },
+    { icon: Shield, title: "Zero Maintenance", description: "We handle everything - repairs, insurance, servicing", color: "text-purple-600" },
+    { icon: Zap, title: "Instant Delivery", description: "Vehicle delivered to your doorstep in 2 hours", color: "text-orange-600" }
   ];
 
-  const partners = [
-    "Battery Smart", "Sun Mobility", "ChargeZone", "Ather Grid", 
-    "Bolt.Earth", "Swiggy", "Zomato", "Blinkit", "Zepto", 
-    "BigBasket", "Flipkart", "Amazon", "Myntra", "Meesho"
+  const earningOpportunities = [
+    { 
+      icon: Package, 
+      title: "Food Delivery", 
+      earning: "₹15,000-₹25,000/month",
+      partners: "Zomato, Swiggy, Uber Eats",
+      description: "Peak hours: 12-3PM, 7-11PM"
+    },
+    { 
+      icon: Truck, 
+      title: "E-commerce Delivery", 
+      earning: "₹20,000-₹35,000/month",
+      partners: "Amazon, Flipkart, Myntra",
+      description: "Full-time earning potential"
+    },
+    { 
+      icon: Timer, 
+      title: "Quick Commerce", 
+      earning: "₹18,000-₹30,000/month",
+      partners: "Blinkit, Zepto, Instamart",
+      description: "10-minute delivery specialist"
+    },
+    { 
+      icon: Award, 
+      title: "Premium Services", 
+      earning: "₹25,000-₹50,000/month",
+      partners: "Corporate, Medical",
+      description: "High-value deliveries"
+    }
   ];
 
   const stats = [
-    { number: "10,000+", label: "Happy Riders" },
-    { number: "500+", label: "Battery Swap Stations" },
-    { number: "50+", label: "Cities" },
-    { number: "99%", label: "Uptime" }
+    { number: "500+", label: "Active Riders", icon: Users },
+    { number: "50+", label: "Battery Stations", icon: Battery },
+    { number: "₹2.5L+", label: "Monthly Earnings", icon: TrendingUp },
+    { number: "100%", label: "Eco-Friendly", icon: Leaf }
+  ];
+
+  const testimonials = [
+    {
+      name: "Raj Kumar",
+      role: "Delivery Partner",
+      rating: 5,
+      text: "Earning ₹22,000 monthly with KWICK! No fuel costs, no maintenance headaches. Best decision ever.",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+    },
+    {
+      name: "Priya Singh",
+      role: "E-commerce Rider",
+      rating: 5,
+      text: "From ₹8,000 to ₹28,000 monthly income after switching to KWICK. Unlimited battery swaps are a game-changer!",
+      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+    },
+    {
+      name: "Amit Sharma",
+      role: "Food Delivery Expert",
+      rating: 5,
+      text: "KWICK's AI optimization helped me identify peak hours. Now earning ₹35,000+ monthly consistently.",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+    }
+  ];
+
+  const whyChooseKwick = [
+    { 
+      title: "No Down Payment", 
+      description: "Start earning immediately with ₹0 upfront cost",
+      icon: CreditCard,
+      highlight: "Save ₹1,50,000"
+    },
+    { 
+      title: "Monthly Savings", 
+      description: "₹99/day vs ₹400/day for fuel + maintenance",
+      icon: IndianRupee,
+      highlight: "Save ₹9,000/month"
+    },
+    { 
+      title: "AI Optimization", 
+      description: "Smart route planning to maximize your earnings",
+      icon: Target,
+      highlight: "Earn 40% More"
+    },
+    { 
+      title: "24/7 Support", 
+      description: "Instant help when you need it most",
+      icon: Phone,
+      highlight: "Always Available"
+    }
   ];
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary via-red-600 to-red-700 text-white">
+      <section className="relative bg-gradient-to-r from-green-600 via-primary to-red-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -54,41 +142,54 @@ export default function Index() {
                 🚀 India's #1 EV Rental Platform
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                Rent Electric,
-                <span className="block text-yellow-300">Save Future!</span>
+                Rent KWICK EV.
+                <span className="block text-green-300">Earn Lakhs.</span>
               </h1>
               <p className="text-xl mb-8 text-red-100">
-                Skip the EMI, skip the maintenance. Rent premium electric vehicles by the day, 
-                week, or month. Join 10,000+ riders making sustainable choices.
+                Transform your life with our premium electric scooters. 
+                Earn ₹15,000-₹50,000 monthly through delivery services. 
+                Zero fuel costs, unlimited battery swaps, 100% eco-friendly.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Link to="/signup">
                   <Button size="lg" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-4">
-                    Start Renting Now
+                    Start Earning Today
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-4"
-                  onClick={() => setIsVideoPlaying(true)}
-                >
-                  <Play className="mr-2 h-5 w-5" />
-                  Watch Demo
-                </Button>
+                <Link to="/battery-map">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-4"
+                  >
+                    <MapPin className="mr-2 h-5 w-5" />
+                    Find Battery Stations
+                  </Button>
+                </Link>
+              </div>
+              <div className="flex items-center space-x-6 text-sm text-red-200">
+                <span>📍 Noida Sector 112</span>
+                <span>🔋 Free Battery Swaps</span>
+                <span>🌱 100% Eco-Friendly</span>
               </div>
             </div>
+            
             <div className="relative">
-              <div className="relative z-10">
+              <div className="relative">
                 <img 
-                  src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                  alt="KWICK Electric Vehicle" 
+                  src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                  alt="KWICK Electric Scooter"
                   className="rounded-lg shadow-2xl"
                 />
-                <div className="absolute -bottom-6 -right-6 bg-white text-primary p-4 rounded-lg shadow-lg">
-                  <div className="text-2xl font-bold">₹99/day</div>
-                  <div className="text-sm text-gray-600">Starting from</div>
+                <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-lg shadow-lg text-gray-900">
+                  <div className="flex items-center space-x-3">
+                    <Bike className="h-8 w-8 text-primary" />
+                    <div>
+                      <div className="text-lg font-bold">KWICK EV</div>
+                      <div className="text-sm text-gray-600">Premium Electric Scooter</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -97,12 +198,24 @@ export default function Index() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              KWICK by the Numbers
+            </h2>
+            <p className="text-xl text-gray-600">
+              Real impact, real results, real earnings
+            </p>
+          </div>
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2">{stat.number}</div>
+                <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <stat.icon className="h-8 w-8 text-primary" />
+                </div>
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>
                 <div className="text-gray-600">{stat.label}</div>
               </div>
             ))}
@@ -110,110 +223,57 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Vehicle Showcase */}
-      <section className="py-20 bg-gray-50">
+      {/* Earning Opportunities */}
+      <section className="py-20 bg-gradient-to-r from-green-50 to-blue-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Our Premium EV Fleet
+              Multiple Ways to Earn
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose from our curated collection of electric vehicles. 
-              All vehicles come with unlimited battery swaps and zero maintenance.
+            <p className="text-xl text-gray-600">
+              Choose your earning path with KWICK EV scooters
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* KWICK Vehicle Card */}
-            <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="KWICK Electric Scooter"
-                  className="w-full h-48 object-cover"
-                />
-                <Badge className="absolute top-4 left-4 bg-primary text-white">
-                  Most Popular
-                </Badge>
-              </div>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  KWICK Elite
-                  <div className="flex items-center">
-                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                    <span className="ml-1 text-sm">4.8</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {earningOpportunities.map((opportunity, index) => (
+              <Card key={index} className="border-primary/20 hover:shadow-xl transition-all hover:scale-105">
+                <CardHeader className="text-center">
+                  <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <opportunity.icon className="h-8 w-8 text-primary" />
                   </div>
-                </CardTitle>
-                <CardDescription>Premium electric scooter with 80km range</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Range</span>
-                    <span className="font-semibold">80km</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Top Speed</span>
-                    <span className="font-semibold">65 km/h</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Daily Rate</span>
-                    <span className="font-bold text-primary">₹99/day</span>
-                  </div>
-                  <Link to="/signup">
-                    <Button className="w-full mt-4 bg-primary hover:bg-primary/90">
-                      Book Now
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+                  <CardTitle className="text-lg">{opportunity.title}</CardTitle>
+                  <div className="text-2xl font-bold text-green-600">{opportunity.earning}</div>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <p className="text-primary font-semibold mb-2">{opportunity.partners}</p>
+                  <p className="text-gray-600 text-sm">{opportunity.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-            {/* Coming Soon Cards */}
-            <Card className="overflow-hidden shadow-lg opacity-75">
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="KWICK Bike"
-                  className="w-full h-48 object-cover"
-                />
-                <Badge className="absolute top-4 left-4 bg-gray-600 text-white">
-                  Coming Soon
-                </Badge>
-              </div>
-              <CardHeader>
-                <CardTitle>KWICK Power</CardTitle>
-                <CardDescription>High-performance electric bike</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button disabled className="w-full">Launching Soon</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="overflow-hidden shadow-lg opacity-75">
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1593941707882-a5bac6861d75?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                  alt="KWICK Car"
-                  className="w-full h-48 object-cover"
-                />
-                <Badge className="absolute top-4 left-4 bg-gray-600 text-white">
-                  Coming Soon
-                </Badge>
-              </div>
-              <CardHeader>
-                <CardTitle>KWICK Cab</CardTitle>
-                <CardDescription>Electric car for longer journeys</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button disabled className="w-full">Launching Soon</Button>
-              </CardContent>
-            </Card>
+          <div className="text-center mt-12">
+            <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                💰 Average Annual Earnings: ₹2.5 - ₹6 Lakhs
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Our top riders earn over ₹50,000 monthly by combining multiple delivery services. 
+                Start your journey to financial freedom today!
+              </p>
+              <Link to="/about">
+                <Button size="lg" className="bg-primary hover:bg-primary/90">
+                  Learn How to Maximize Earnings
+                  <TrendingUp className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Key Benefits */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -221,123 +281,239 @@ export default function Index() {
               Why Choose KWICK?
             </h2>
             <p className="text-xl text-gray-600">
-              Experience the future of mobility with our premium EV rental service
+              The smart choice for earning and environment
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="text-center">
-                <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <benefit.icon className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
-              </div>
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                    benefit.color === 'text-green-600' ? 'bg-green-100' :
+                    benefit.color === 'text-blue-600' ? 'bg-blue-100' :
+                    benefit.color === 'text-purple-600' ? 'bg-purple-100' : 'bg-orange-100'
+                  }`}>
+                    <benefit.icon className={`h-8 w-8 ${benefit.color}`} />
+                  </div>
+                  <CardTitle className="text-lg">{benefit.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">{benefit.description}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Delivery Partner Section */}
-      <section className="py-20 bg-gradient-to-r from-green-50 to-blue-50">
+      {/* Why Choose KWICK vs Buying */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Earn Extra as a Delivery Partner
+              KWICK vs Buying: The Smart Choice
             </h2>
-            <p className="text-xl text-gray-600 mb-8">
-              Rent a KWICK vehicle and become a delivery partner. 
-              <span className="text-primary font-semibold"> Paisa Hi Paisa! 💰</span>
+            <p className="text-xl text-gray-600">
+              See why thousands choose rental over purchase
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <CheckCircle className="h-6 w-6 text-green-500 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Flexible Working Hours</h3>
-                    <p className="text-gray-600">Work when you want, earn what you deserve</p>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {whyChooseKwick.map((item, index) => (
+              <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="absolute top-0 right-0 bg-green-500 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
+                  {item.highlight}
                 </div>
-                <div className="flex items-start space-x-4">
-                  <CheckCircle className="h-6 w-6 text-green-500 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Zero Investment</h3>
-                    <p className="text-gray-600">No vehicle purchase, just rent and start earning</p>
+                <CardHeader>
+                  <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+                    <item.icon className="h-6 w-6 text-primary" />
                   </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <CheckCircle className="h-6 w-6 text-green-500 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Multiple Platforms</h3>
-                    <p className="text-gray-600">Partner with all major delivery apps</p>
-                  </div>
-                </div>
-              </div>
-              <Link to="/signup">
-                <Button size="lg" className="mt-8 bg-green-600 hover:bg-green-700">
-                  Start Earning Today
-                  <TrendingUp className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+                  <CardTitle className="text-lg">{item.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">{item.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Complete Cost Comparison</h3>
             </div>
-            <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1540479859555-17af45c78602?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Delivery Partner"
-                className="rounded-lg shadow-lg"
-              />
-              <div className="absolute -top-4 -right-4 bg-yellow-400 text-black p-4 rounded-lg shadow-lg transform rotate-12">
-                <div className="text-lg font-bold">₹15,000+</div>
-                <div className="text-sm">Monthly Income</div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">Aspect</th>
+                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">Buying Scooter</th>
+                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">KWICK Rental</th>
+                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">Your Savings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b hover:bg-gray-50">
+                    <td className="py-4 px-6 font-medium">Initial Cost</td>
+                    <td className="py-4 px-6 text-red-600">₹1,50,000 down payment</td>
+                    <td className="py-4 px-6 text-green-600">₹0 down payment</td>
+                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">Save ₹1,50,000</td>
+                  </tr>
+                  <tr className="border-b hover:bg-gray-50">
+                    <td className="py-4 px-6 font-medium">Monthly Cost</td>
+                    <td className="py-4 px-6 text-red-600">₹12,000 (EMI + fuel + maintenance)</td>
+                    <td className="py-4 px-6 text-green-600">₹2,970 (₹99/day)</td>
+                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">Save ₹9,030/month</td>
+                  </tr>
+                  <tr className="border-b hover:bg-gray-50">
+                    <td className="py-4 px-6 font-medium">Maintenance</td>
+                    <td className="py-4 px-6 text-red-600">Your responsibility</td>
+                    <td className="py-4 px-6 text-green-600">100% covered by KWICK</td>
+                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">Stress-free</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="text-center mt-8">
+              <div className="bg-green-100 p-6 rounded-lg inline-block">
+                <h4 className="text-2xl font-bold text-green-800 mb-2">
+                  Total 3-Year Savings: ₹4,25,000+
+                </h4>
+                <p className="text-green-700">
+                  Plus earning potential of ₹7,50,000+ through delivery services!
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Partners Section */}
-      <section className="py-16 bg-gray-900 text-white overflow-hidden">
+      {/* Testimonials */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Partners</h2>
-            <p className="text-xl text-gray-300">
-              Trusted by leading battery swap networks and delivery platforms
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Success Stories
+            </h2>
+            <p className="text-xl text-gray-600">
+              Real riders, real earnings, real impact
             </p>
           </div>
 
-          <div className="relative">
-            <div className="flex animate-scroll space-x-12">
-              {[...partners, ...partners].map((partner, index) => (
-                <div 
-                  key={index}
-                  className="flex-shrink-0 bg-white/10 backdrop-blur-sm px-6 py-3 rounded-lg"
-                >
-                  <span className="text-lg font-semibold whitespace-nowrap">{partner}</span>
-                </div>
-              ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <img 
+                      src={testimonial.avatar}
+                      alt={testimonial.name}
+                      className="w-12 h-12 rounded-full mr-4 object-cover"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-600">{testimonial.role}</p>
+                    </div>
+                  </div>
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 italic">"{testimonial.text}"</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Eco-Friendly Section */}
+      <section className="py-20 bg-green-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Earn Money, Save Planet
+            </h2>
+            <p className="text-xl text-gray-600">
+              Every KWICK ride contributes to a cleaner India
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <Card className="text-center border-green-200">
+              <CardHeader>
+                <Leaf className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                <CardTitle className="text-green-700">Zero Emissions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">100% electric, 0% pollution. Every km saves the environment.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center border-green-200">
+              <CardHeader>
+                <Sun className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+                <CardTitle className="text-green-700">Solar Powered</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">60% of our battery stations run on renewable solar energy.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center border-green-200">
+              <CardHeader>
+                <Recycle className="h-16 w-16 text-blue-500 mx-auto mb-4" />
+                <CardTitle className="text-green-700">100% Recycled</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">All batteries are responsibly recycled through certified processes.</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="bg-white p-8 rounded-lg shadow-lg text-center">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              🌱 Your Impact Matters
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Every 1000 km with KWICK saves 50kg CO2 emissions and plants 5 trees. 
+              Earn money while building a sustainable future for your children.
+            </p>
+            <div className="grid grid-cols-3 gap-8 text-center">
+              <div>
+                <div className="text-3xl font-bold text-green-600">500+</div>
+                <div className="text-sm text-gray-600">Trees Saved</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-blue-600">5000kg</div>
+                <div className="text-sm text-gray-600">CO2 Prevented</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-purple-600">100%</div>
+                <div className="text-sm text-gray-600">Renewable</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-white">
+      <section className="py-20 bg-gradient-to-r from-primary to-red-600 text-white">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Go Electric?
+            Ready to Start Earning?
           </h2>
           <p className="text-xl mb-8 text-red-100">
-            Join thousands of riders who've made the switch to sustainable mobility. 
-            Book your KWICK vehicle in under 2 minutes.
+            Join hundreds of riders already earning lakhs with KWICK EV scooters. 
+            Your profitable, eco-friendly future starts with one click.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link to="/signup">
               <Button size="lg" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-4">
-                Book Your Vehicle
+                Start Earning Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -347,26 +523,15 @@ export default function Index() {
                 variant="outline" 
                 className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-4"
               >
-                View Pricing
+                View Rental Plans
               </Button>
             </Link>
           </div>
+          <div className="text-sm text-red-200">
+            💚 Join the eco-revolution • 💰 Earn lakhs monthly • 📍 Noida Sector 112 • 🤖 AI-powered success
+          </div>
         </div>
       </section>
-
-      <style jsx>{`
-        @keyframes scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        .animate-scroll {
-          animation: scroll 20s linear infinite;
-        }
-      `}</style>
     </div>
   );
 }
