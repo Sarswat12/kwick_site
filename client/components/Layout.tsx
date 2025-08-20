@@ -144,10 +144,10 @@ export default function Layout({ children }: LayoutProps) {
               <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2">
                 <li><Link to="/about" className="text-gray-300 hover:text-primary transition-colors">About Us</Link></li>
-                <li><Link to="/pricing" className="text-gray-300 hover:text-primary transition-colors">Pricing</Link></li>
+                <li><Link to="/pricing" className="text-gray-300 hover:text-primary transition-colors">Pricing Plans</Link></li>
+                <li><Link to="/battery-map" className="text-gray-300 hover:text-primary transition-colors">Battery Swap Stations</Link></li>
+                <li><Link to="/account" className="text-gray-300 hover:text-primary transition-colors">My Account</Link></li>
                 <li><Link to="/contact" className="text-gray-300 hover:text-primary transition-colors">Contact</Link></li>
-                <li><Link to="/blog" className="text-gray-300 hover:text-primary transition-colors">Blog</Link></li>
-                <li><Link to="/careers" className="text-gray-300 hover:text-primary transition-colors">Careers</Link></li>
               </ul>
             </div>
 
