@@ -154,10 +154,10 @@ export default function Layout({ children }: LayoutProps) {
             <div>
               <h4 className="text-lg font-semibold mb-4">Support</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-300 hover:text-primary transition-colors">Help Center</a></li>
+                <li><a href="tel:+919876543210" className="text-gray-300 hover:text-primary transition-colors">24/7 Support</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-primary transition-colors">Delivery Partner</a></li>
                 <li><a href="#" className="text-gray-300 hover:text-primary transition-colors">Terms of Service</a></li>
                 <li><a href="#" className="text-gray-300 hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-primary transition-colors">Become a Partner</a></li>
               </ul>
             </div>
           </div>
