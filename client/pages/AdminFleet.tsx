@@ -447,7 +447,7 @@ export default function AdminFleet() {
                       <SelectValue placeholder={getText('All Status', 'सभी स्थितियां')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
+                      <SelectItem value="all">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
                       <SelectItem value="available">{getText('Available', 'उपलब्ध')}</SelectItem>
                       <SelectItem value="rented">{getText('Rented', 'किराये पर')}</SelectItem>
                       <SelectItem value="maintenance">{getText('Maintenance', 'रखरखाव')}</SelectItem>
@@ -463,7 +463,7 @@ export default function AdminFleet() {
                       <SelectValue placeholder={getText('All Conditions', 'सभी स्थितियां')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">{getText('All Conditions', 'सभी स्थितियां')}</SelectItem>
+                      <SelectItem value="all">{getText('All Conditions', 'सभी स्थितियां')}</SelectItem>
                       <SelectItem value="excellent">{getText('Excellent', 'उत्कृष्ट')}</SelectItem>
                       <SelectItem value="good">{getText('Good', 'अच्छा')}</SelectItem>
                       <SelectItem value="fair">{getText('Fair', 'ठीक')}</SelectItem>
@@ -489,7 +489,7 @@ export default function AdminFleet() {
                       <SelectValue placeholder={getText('All Locations', 'सभी स्थान')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">{getText('All Locations', 'सभी स्थान')}</SelectItem>
+                      <SelectItem value="all">{getText('All Locations', 'सभी स्थान')}</SelectItem>
                       <SelectItem value="mumbai">Mumbai</SelectItem>
                       <SelectItem value="delhi">Delhi</SelectItem>
                       <SelectItem value="bangalore">Bangalore</SelectItem>
@@ -850,7 +850,7 @@ export default function AdminFleet() {
                   <Input value={`${selectedVehicle.totalKms.toLocaleString()} km`} readOnly />
                 </div>
                 <div>
-                  <Label>{getText('Last Maintenance', 'अंतिम रखरखाव')}</Label>
+                  <Label>{getText('Last Maintenance', 'अ��तिम रखरखाव')}</Label>
                   <Input value={formatDate(selectedVehicle.lastMaintenance)} readOnly />
                 </div>
                 <div className="col-span-2">
