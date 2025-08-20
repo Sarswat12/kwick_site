@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
-import { Button } from './ui/button';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,11 +12,11 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Battery Map', href: '/battery-map' },
-    { name: 'Contact', href: '/contact' },
+    { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "Battery Map", href: "/battery-map" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -41,8 +41,8 @@ export default function Layout({ children }: LayoutProps) {
                   to={item.href}
                   className={`${
                     isActive(item.href)
-                      ? 'text-primary border-b-2 border-primary'
-                      : 'text-gray-700 hover:text-primary'
+                      ? "text-primary border-b-2 border-primary"
+                      : "text-gray-700 hover:text-primary"
                   } px-3 py-2 text-sm font-medium transition-colors duration-200`}
                 >
                   {item.name}
@@ -84,8 +84,8 @@ export default function Layout({ children }: LayoutProps) {
                   to={item.href}
                   className={`${
                     isActive(item.href)
-                      ? 'text-primary bg-red-50'
-                      : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+                      ? "text-primary bg-red-50"
+                      : "text-gray-700 hover:text-primary hover:bg-gray-50"
                   } block px-3 py-2 text-base font-medium transition-colors duration-200`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -99,7 +99,10 @@ export default function Layout({ children }: LayoutProps) {
                   </Button>
                 </Link>
                 <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
-                  <Button size="sm" className="w-full bg-primary hover:bg-primary/90">
+                  <Button
+                    size="sm"
+                    className="w-full bg-primary hover:bg-primary/90"
+                  >
                     Sign Up
                   </Button>
                 </Link>
@@ -110,9 +113,7 @@ export default function Layout({ children }: LayoutProps) {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-16">
-        {children}
-      </main>
+      <main className="pt-16">{children}</main>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white">
@@ -121,20 +122,34 @@ export default function Layout({ children }: LayoutProps) {
             <div className="col-span-1 md:col-span-2">
               <h3 className="text-2xl font-bold text-primary mb-4">KWICK</h3>
               <p className="text-gray-300 mb-4">
-                India's #1 electric scooter rental platform. Rent KWICK EV scooters and earn ₹15,000-₹50,000 monthly.
-                Zero fuel costs, unlimited battery swaps, 100% eco-friendly. Based in Noida Sector 112.
+                India's #1 electric scooter rental platform. Rent KWICK EV
+                scooters and earn ₹15,000-₹50,000 monthly. Zero fuel costs,
+                unlimited battery swaps, 100% eco-friendly. Based in Noida
+                Sector 112.
               </p>
               <div className="flex space-x-4">
-                <a href="#" className="text-gray-300 hover:text-primary transition-colors">
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-primary transition-colors"
+                >
                   Facebook
                 </a>
-                <a href="#" className="text-gray-300 hover:text-primary transition-colors">
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-primary transition-colors"
+                >
                   Twitter
                 </a>
-                <a href="#" className="text-gray-300 hover:text-primary transition-colors">
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-primary transition-colors"
+                >
                   Instagram
                 </a>
-                <a href="#" className="text-gray-300 hover:text-primary transition-colors">
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-primary transition-colors"
+                >
                   LinkedIn
                 </a>
               </div>
@@ -143,28 +158,92 @@ export default function Layout({ children }: LayoutProps) {
             <div>
               <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2">
-                <li><Link to="/about" className="text-gray-300 hover:text-primary transition-colors">About Us</Link></li>
-                <li><Link to="/pricing" className="text-gray-300 hover:text-primary transition-colors">Pricing Plans</Link></li>
-                <li><Link to="/battery-map" className="text-gray-300 hover:text-primary transition-colors">Battery Swap Stations</Link></li>
-                <li><Link to="/account" className="text-gray-300 hover:text-primary transition-colors">My Account</Link></li>
-                <li><Link to="/contact" className="text-gray-300 hover:text-primary transition-colors">Contact</Link></li>
+                <li>
+                  <Link
+                    to="/about"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/pricing"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    Pricing Plans
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/battery-map"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    Battery Swap Stations
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/account"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    My Account
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/contact"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    Contact
+                  </Link>
+                </li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-lg font-semibold mb-4">Support</h4>
               <ul className="space-y-2">
-                <li><a href="tel:+919876543210" className="text-gray-300 hover:text-primary transition-colors">24/7 Support</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-primary transition-colors">Delivery Partner</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-primary transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-primary transition-colors">Privacy Policy</a></li>
+                <li>
+                  <a
+                    href="tel:+919876543210"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    24/7 Support
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    Delivery Partner
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="text-gray-300 hover:text-primary transition-colors"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center">
             <p className="text-gray-300">
-              © 2024 KWICK. All rights reserved. | Made with ❤️ for sustainable India
+              © 2024 KWICK. All rights reserved. | Made with ❤️ for sustainable
+              India
             </p>
           </div>
         </div>

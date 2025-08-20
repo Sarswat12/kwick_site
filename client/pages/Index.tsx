@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Zap, 
-  Leaf, 
-  Clock, 
-  Shield, 
-  MapPin, 
-  Star, 
-  Battery, 
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Zap,
+  Leaf,
+  Clock,
+  Shield,
+  MapPin,
+  Star,
+  Battery,
   CreditCard,
   Users,
   TrendingUp,
@@ -28,55 +34,75 @@ import {
   Target,
   Truck,
   Sun,
-  Recycle
-} from 'lucide-react';
+  Recycle,
+} from "lucide-react";
 
 export default function Index() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   const benefits = [
-    { icon: DollarSign, title: "Earn ₹50,000/Month", description: "Turn your rental into a profitable delivery business", color: "text-green-600" },
-    { icon: Battery, title: "Unlimited Battery Swaps", description: "Free swapping at 50+ stations across NCR", color: "text-blue-600" },
-    { icon: Shield, title: "Zero Maintenance", description: "We handle everything - repairs, insurance, servicing", color: "text-purple-600" },
-    { icon: Zap, title: "Instant Delivery", description: "Vehicle delivered to your doorstep in 2 hours", color: "text-orange-600" }
+    {
+      icon: DollarSign,
+      title: "Earn ₹50,000/Month",
+      description: "Turn your rental into a profitable delivery business",
+      color: "text-green-600",
+    },
+    {
+      icon: Battery,
+      title: "Unlimited Battery Swaps",
+      description: "Free swapping at 50+ stations across NCR",
+      color: "text-blue-600",
+    },
+    {
+      icon: Shield,
+      title: "Zero Maintenance",
+      description: "We handle everything - repairs, insurance, servicing",
+      color: "text-purple-600",
+    },
+    {
+      icon: Zap,
+      title: "Instant Delivery",
+      description: "Vehicle delivered to your doorstep in 2 hours",
+      color: "text-orange-600",
+    },
   ];
 
   const earningOpportunities = [
-    { 
-      icon: Package, 
-      title: "Food Delivery", 
+    {
+      icon: Package,
+      title: "Food Delivery",
       earning: "₹15,000-₹25,000/month",
       partners: "Zomato, Swiggy, Uber Eats",
-      description: "Peak hours: 12-3PM, 7-11PM"
+      description: "Peak hours: 12-3PM, 7-11PM",
     },
-    { 
-      icon: Truck, 
-      title: "E-commerce Delivery", 
+    {
+      icon: Truck,
+      title: "E-commerce Delivery",
       earning: "₹20,000-₹35,000/month",
       partners: "Amazon, Flipkart, Myntra",
-      description: "Full-time earning potential"
+      description: "Full-time earning potential",
     },
-    { 
-      icon: Timer, 
-      title: "Quick Commerce", 
+    {
+      icon: Timer,
+      title: "Quick Commerce",
       earning: "₹18,000-₹30,000/month",
       partners: "Blinkit, Zepto, Instamart",
-      description: "10-minute delivery specialist"
+      description: "10-minute delivery specialist",
     },
-    { 
-      icon: Award, 
-      title: "Premium Services", 
+    {
+      icon: Award,
+      title: "Premium Services",
       earning: "₹25,000-₹50,000/month",
       partners: "Corporate, Medical",
-      description: "High-value deliveries"
-    }
+      description: "High-value deliveries",
+    },
   ];
 
   const stats = [
     { number: "500+", label: "Active Riders", icon: Users },
     { number: "50+", label: "Battery Stations", icon: Battery },
     { number: "₹2.5L+", label: "Monthly Earnings", icon: TrendingUp },
-    { number: "100%", label: "Eco-Friendly", icon: Leaf }
+    { number: "100%", label: "Eco-Friendly", icon: Leaf },
   ];
 
   const testimonials = [
@@ -85,49 +111,52 @@ export default function Index() {
       role: "Delivery Partner",
       rating: 5,
       text: "Earning ₹22,000 monthly with KWICK! No fuel costs, no maintenance headaches. Best decision ever.",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
     },
     {
       name: "Priya Singh",
       role: "E-commerce Rider",
       rating: 5,
       text: "From ₹8,000 to ₹28,000 monthly income after switching to KWICK. Unlimited battery swaps are a game-changer!",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+      avatar:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
     },
     {
       name: "Amit Sharma",
       role: "Food Delivery Expert",
       rating: 5,
       text: "KWICK's AI optimization helped me identify peak hours. Now earning ₹35,000+ monthly consistently.",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
-    }
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+    },
   ];
 
   const whyChooseKwick = [
-    { 
-      title: "No Down Payment", 
+    {
+      title: "No Down Payment",
       description: "Start earning immediately with ₹0 upfront cost",
       icon: CreditCard,
-      highlight: "Save ₹1,50,000"
+      highlight: "Save ₹1,50,000",
     },
-    { 
-      title: "Monthly Savings", 
+    {
+      title: "Monthly Savings",
       description: "₹99/day vs ₹400/day for fuel + maintenance",
       icon: IndianRupee,
-      highlight: "Save ₹9,000/month"
+      highlight: "Save ₹9,000/month",
     },
-    { 
-      title: "AI Optimization", 
+    {
+      title: "AI Optimization",
       description: "Smart route planning to maximize your earnings",
       icon: Target,
-      highlight: "Earn 40% More"
+      highlight: "Earn 40% More",
     },
-    { 
-      title: "24/7 Support", 
+    {
+      title: "24/7 Support",
       description: "Instant help when you need it most",
       icon: Phone,
-      highlight: "Always Available"
-    }
+      highlight: "Always Available",
+    },
   ];
 
   return (
@@ -146,21 +175,24 @@ export default function Index() {
                 <span className="block text-green-300">Earn Lakhs.</span>
               </h1>
               <p className="text-xl mb-8 text-red-100">
-                Transform your life with our premium electric scooters. 
-                Earn ₹15,000-₹50,000 monthly through delivery services. 
-                Zero fuel costs, unlimited battery swaps, 100% eco-friendly.
+                Transform your life with our premium electric scooters. Earn
+                ₹15,000-₹50,000 monthly through delivery services. Zero fuel
+                costs, unlimited battery swaps, 100% eco-friendly.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Link to="/signup">
-                  <Button size="lg" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-4">
+                  <Button
+                    size="lg"
+                    className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-4"
+                  >
                     Start Earning Today
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
                 <Link to="/battery-map">
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
+                  <Button
+                    size="lg"
+                    variant="outline"
                     className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-4"
                   >
                     <MapPin className="mr-2 h-5 w-5" />
@@ -174,10 +206,10 @@ export default function Index() {
                 <span>🌱 100% Eco-Friendly</span>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="relative">
-                <img 
+                <img
                   src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
                   alt="KWICK Electric Scooter"
                   className="rounded-lg shadow-2xl"
@@ -187,7 +219,9 @@ export default function Index() {
                     <Bike className="h-8 w-8 text-primary" />
                     <div>
                       <div className="text-lg font-bold">KWICK EV</div>
-                      <div className="text-sm text-gray-600">Premium Electric Scooter</div>
+                      <div className="text-sm text-gray-600">
+                        Premium Electric Scooter
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -208,14 +242,16 @@ export default function Index() {
               Real impact, real results, real earnings
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <stat.icon className="h-8 w-8 text-primary" />
                 </div>
-                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{stat.number}</div>
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                  {stat.number}
+                </div>
                 <div className="text-gray-600">{stat.label}</div>
               </div>
             ))}
@@ -237,17 +273,26 @@ export default function Index() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {earningOpportunities.map((opportunity, index) => (
-              <Card key={index} className="border-primary/20 hover:shadow-xl transition-all hover:scale-105">
+              <Card
+                key={index}
+                className="border-primary/20 hover:shadow-xl transition-all hover:scale-105"
+              >
                 <CardHeader className="text-center">
                   <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <opportunity.icon className="h-8 w-8 text-primary" />
                   </div>
                   <CardTitle className="text-lg">{opportunity.title}</CardTitle>
-                  <div className="text-2xl font-bold text-green-600">{opportunity.earning}</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {opportunity.earning}
+                  </div>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-primary font-semibold mb-2">{opportunity.partners}</p>
-                  <p className="text-gray-600 text-sm">{opportunity.description}</p>
+                  <p className="text-primary font-semibold mb-2">
+                    {opportunity.partners}
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    {opportunity.description}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -259,8 +304,9 @@ export default function Index() {
                 💰 Average Annual Earnings: ₹2.5 - ₹6 Lakhs
               </h3>
               <p className="text-gray-600 mb-6">
-                Our top riders earn over ₹50,000 monthly by combining multiple delivery services. 
-                Start your journey to financial freedom today!
+                Our top riders earn over ₹50,000 monthly by combining multiple
+                delivery services. Start your journey to financial freedom
+                today!
               </p>
               <Link to="/about">
                 <Button size="lg" className="bg-primary hover:bg-primary/90">
@@ -287,13 +333,22 @@ export default function Index() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+              <Card
+                key={index}
+                className="text-center hover:shadow-lg transition-shadow"
+              >
                 <CardHeader>
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                    benefit.color === 'text-green-600' ? 'bg-green-100' :
-                    benefit.color === 'text-blue-600' ? 'bg-blue-100' :
-                    benefit.color === 'text-purple-600' ? 'bg-purple-100' : 'bg-orange-100'
-                  }`}>
+                  <div
+                    className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                      benefit.color === "text-green-600"
+                        ? "bg-green-100"
+                        : benefit.color === "text-blue-600"
+                          ? "bg-blue-100"
+                          : benefit.color === "text-purple-600"
+                            ? "bg-purple-100"
+                            : "bg-orange-100"
+                    }`}
+                  >
                     <benefit.icon className={`h-8 w-8 ${benefit.color}`} />
                   </div>
                   <CardTitle className="text-lg">{benefit.title}</CardTitle>
@@ -321,7 +376,10 @@ export default function Index() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {whyChooseKwick.map((item, index) => (
-              <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow">
+              <Card
+                key={index}
+                className="relative overflow-hidden hover:shadow-lg transition-shadow"
+              >
                 <div className="absolute top-0 right-0 bg-green-500 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
                   {item.highlight}
                 </div>
@@ -340,37 +398,65 @@ export default function Index() {
 
           <div className="bg-white p-8 rounded-lg shadow-lg">
             <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Complete Cost Comparison</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Complete Cost Comparison
+              </h3>
             </div>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">Aspect</th>
-                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">Buying Scooter</th>
-                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">KWICK Rental</th>
-                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">Your Savings</th>
+                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">
+                      Aspect
+                    </th>
+                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">
+                      Buying Scooter
+                    </th>
+                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">
+                      KWICK Rental
+                    </th>
+                    <th className="text-left py-4 px-6 text-gray-900 font-semibold">
+                      Your Savings
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b hover:bg-gray-50">
                     <td className="py-4 px-6 font-medium">Initial Cost</td>
-                    <td className="py-4 px-6 text-red-600">₹1,50,000 down payment</td>
-                    <td className="py-4 px-6 text-green-600">₹0 down payment</td>
-                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">Save ₹1,50,000</td>
+                    <td className="py-4 px-6 text-red-600">
+                      ₹1,50,000 down payment
+                    </td>
+                    <td className="py-4 px-6 text-green-600">
+                      ₹0 down payment
+                    </td>
+                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">
+                      Save ₹1,50,000
+                    </td>
                   </tr>
                   <tr className="border-b hover:bg-gray-50">
                     <td className="py-4 px-6 font-medium">Monthly Cost</td>
-                    <td className="py-4 px-6 text-red-600">₹12,000 (EMI + fuel + maintenance)</td>
-                    <td className="py-4 px-6 text-green-600">₹2,970 (₹99/day)</td>
-                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">Save ₹9,030/month</td>
+                    <td className="py-4 px-6 text-red-600">
+                      ₹12,000 (EMI + fuel + maintenance)
+                    </td>
+                    <td className="py-4 px-6 text-green-600">
+                      ₹2,970 (₹99/day)
+                    </td>
+                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">
+                      Save ₹9,030/month
+                    </td>
                   </tr>
                   <tr className="border-b hover:bg-gray-50">
                     <td className="py-4 px-6 font-medium">Maintenance</td>
-                    <td className="py-4 px-6 text-red-600">Your responsibility</td>
-                    <td className="py-4 px-6 text-green-600">100% covered by KWICK</td>
-                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">Stress-free</td>
+                    <td className="py-4 px-6 text-red-600">
+                      Your responsibility
+                    </td>
+                    <td className="py-4 px-6 text-green-600">
+                      100% covered by KWICK
+                    </td>
+                    <td className="py-4 px-6 font-bold text-green-700 bg-green-50 rounded">
+                      Stress-free
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -382,7 +468,8 @@ export default function Index() {
                   Total 3-Year Savings: ₹4,25,000+
                 </h4>
                 <p className="text-green-700">
-                  Plus earning potential of ₹7,50,000+ through delivery services!
+                  Plus earning potential of ₹7,50,000+ through delivery
+                  services!
                 </p>
               </div>
             </div>
@@ -407,19 +494,26 @@ export default function Index() {
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    <img 
+                    <img
                       src={testimonial.avatar}
                       alt={testimonial.name}
                       className="w-12 h-12 rounded-full mr-4 object-cover"
                     />
                     <div>
-                      <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
+                      <h4 className="font-semibold text-gray-900">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        {testimonial.role}
+                      </p>
                     </div>
                   </div>
                   <div className="flex mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                      <Star
+                        key={i}
+                        className="w-4 h-4 text-yellow-400 fill-current"
+                      />
                     ))}
                   </div>
                   <p className="text-gray-700 italic">"{testimonial.text}"</p>
@@ -449,7 +543,9 @@ export default function Index() {
                 <CardTitle className="text-green-700">Zero Emissions</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">100% electric, 0% pollution. Every km saves the environment.</p>
+                <p className="text-gray-600">
+                  100% electric, 0% pollution. Every km saves the environment.
+                </p>
               </CardContent>
             </Card>
 
@@ -459,7 +555,9 @@ export default function Index() {
                 <CardTitle className="text-green-700">Solar Powered</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">60% of our battery stations run on renewable solar energy.</p>
+                <p className="text-gray-600">
+                  60% of our battery stations run on renewable solar energy.
+                </p>
               </CardContent>
             </Card>
 
@@ -469,7 +567,10 @@ export default function Index() {
                 <CardTitle className="text-green-700">100% Recycled</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">All batteries are responsibly recycled through certified processes.</p>
+                <p className="text-gray-600">
+                  All batteries are responsibly recycled through certified
+                  processes.
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -479,8 +580,9 @@ export default function Index() {
               🌱 Your Impact Matters
             </h3>
             <p className="text-gray-600 mb-6">
-              Every 1000 km with KWICK saves 50kg CO2 emissions and plants 5 trees. 
-              Earn money while building a sustainable future for your children.
+              Every 1000 km with KWICK saves 50kg CO2 emissions and plants 5
+              trees. Earn money while building a sustainable future for your
+              children.
             </p>
             <div className="grid grid-cols-3 gap-8 text-center">
               <div>
@@ -507,20 +609,24 @@ export default function Index() {
             Ready to Start Earning?
           </h2>
           <p className="text-xl mb-8 text-red-100">
-            Join hundreds of riders already earning lakhs with KWICK EV scooters. 
-            Your profitable, eco-friendly future starts with one click.
+            Join hundreds of riders already earning lakhs with KWICK EV
+            scooters. Your profitable, eco-friendly future starts with one
+            click.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link to="/signup">
-              <Button size="lg" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-4">
+              <Button
+                size="lg"
+                className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-4"
+              >
                 Start Earning Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link to="/pricing">
-              <Button 
-                size="lg" 
-                variant="outline" 
+              <Button
+                size="lg"
+                variant="outline"
                 className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-4"
               >
                 View Rental Plans
@@ -528,7 +634,8 @@ export default function Index() {
             </Link>
           </div>
           <div className="text-sm text-red-200">
-            💚 Join the eco-revolution • 💰 Earn lakhs monthly • 📍 Noida Sector 112 • 🤖 AI-powered success
+            💚 Join the eco-revolution • 💰 Earn lakhs monthly • 📍 Noida Sector
+            112 • 🤖 AI-powered success
           </div>
         </div>
       </section>
