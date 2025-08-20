@@ -83,7 +83,7 @@ export default function AdminUsers() {
       const queryParams = new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
-        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== ''))
+        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== '' && value !== 'all'))
       });
 
       const response = await fetch(`/api/admin/users?${queryParams}`, {
@@ -308,7 +308,7 @@ export default function AdminUsers() {
         <CardHeader>
           <CardTitle>{getText('Users', 'उपयोगकर्ता')} ({users.length})</CardTitle>
           <CardDescription>
-            {getText('Manage user accounts and their status', '��पयोगकर्���ा खातों और उनकी स्थिति का प्रबंधन करें')}
+            {getText('Manage user accounts and their status', 'उपयोगकर्���ा खातों और उनकी स्थिति का प्रबंधन करें')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -555,7 +555,7 @@ export default function AdminUsers() {
                       setIsEditDialogOpen(false);
                     }}
                   >
-                    {getText('Activate User', '���पयोगकर्ता को ���क्रिय करें')}
+                    {getText('Activate User', 'उपयोगकर्ता को ���क्रिय करें')}
                   </Button>
                 )}
                 <Button
