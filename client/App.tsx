@@ -28,22 +28,35 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/blog" element={<PlaceholderPage pageName="Blog" />} />
-            <Route path="/careers" element={<PlaceholderPage pageName="Careers" />} />
-            <Route path="/admin" element={<PlaceholderPage pageName="Admin Dashboard" />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Layout><Index /></Layout>} />
+          <Route path="/about" element={<Layout><About /></Layout>} />
+          <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
+          <Route path="/contact" element={<Layout><Contact /></Layout>} />
+          <Route path="/login" element={<Layout><Login /></Layout>} />
+          <Route path="/signup" element={<Layout><Signup /></Layout>} />
+          <Route path="/account" element={<Layout><Account /></Layout>} />
+          <Route path="/blog" element={<Layout><PlaceholderPage pageName="Blog" /></Layout>} />
+          <Route path="/careers" element={<Layout><PlaceholderPage pageName="Careers" /></Layout>} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
+          <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
+          <Route path="/admin/payments" element={<AdminLayout><PlaceholderPage pageName="Payment Management" /></AdminLayout>} />
+          <Route path="/admin/kyc" element={<AdminLayout><PlaceholderPage pageName="KYC Management" /></AdminLayout>} />
+          <Route path="/admin/fleet" element={<AdminLayout><PlaceholderPage pageName="Fleet Management" /></AdminLayout>} />
+          <Route path="/admin/iot" element={<AdminLayout><PlaceholderPage pageName="IoT Devices" /></AdminLayout>} />
+          <Route path="/admin/support" element={<AdminLayout><PlaceholderPage pageName="Support Tickets" /></AdminLayout>} />
+          <Route path="/admin/blog" element={<AdminLayout><PlaceholderPage pageName="Blog Management" /></AdminLayout>} />
+          <Route path="/admin/careers" element={<AdminLayout><PlaceholderPage pageName="Career Management" /></AdminLayout>} />
+          <Route path="/admin/analytics" element={<AdminLayout><PlaceholderPage pageName="Analytics" /></AdminLayout>} />
+          <Route path="/admin/settings" element={<AdminLayout><PlaceholderPage pageName="Settings" /></AdminLayout>} />
+
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<Layout><NotFound /></Layout>} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
