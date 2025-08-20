@@ -121,7 +121,7 @@ export default function AdminFleet() {
       const queryParams = new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
-        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== ''))
+        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== '' && value !== 'all'))
       });
 
       const response = await fetch(`/api/admin/vehicles?${queryParams}`, {
@@ -312,7 +312,7 @@ export default function AdminFleet() {
             {getText('Fleet Management', 'फ्लीट प्रबंधन')}
           </h1>
           <p className="text-gray-600 mt-1">
-            {getText('Monitor and manage your EV fleet and IoT devices', 'अपने EV फ्लीट और IoT उपकरणों की निगरानी और प्रबंधन करें')}
+            {getText('Monitor and manage your EV fleet and IoT devices', 'अपने EV फ्लीट और IoT उपकरणों की निगरान��� और प्रबंधन करें')}
           </p>
         </div>
         <div className="flex space-x-3">
@@ -409,9 +409,9 @@ export default function AdminFleet() {
       {/* Tabs for Fleet and IoT */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="fleet">{getText('Fleet Overview', 'फ्लीट अवलोकन')}</TabsTrigger>
+          <TabsTrigger value="fleet">{getText('Fleet Overview', 'फ्���ीट अवलोकन')}</TabsTrigger>
           <TabsTrigger value="iot">{getText('IoT Devices', 'IoT उपकरण')}</TabsTrigger>
-          <TabsTrigger value="map">{getText('Live Map', 'लाइव मैप')}</TabsTrigger>
+          <TabsTrigger value="map">{getText('Live Map', 'ल���इव मैप')}</TabsTrigger>
         </TabsList>
 
         {/* Fleet Overview Tab */}
@@ -850,7 +850,7 @@ export default function AdminFleet() {
                   <Input value={`${selectedVehicle.totalKms.toLocaleString()} km`} readOnly />
                 </div>
                 <div>
-                  <Label>{getText('Last Maintenance', 'अ��तिम रखरखाव')}</Label>
+                  <Label>{getText('Last Maintenance', 'अंतिम रखरखाव')}</Label>
                   <Input value={formatDate(selectedVehicle.lastMaintenance)} readOnly />
                 </div>
                 <div className="col-span-2">
