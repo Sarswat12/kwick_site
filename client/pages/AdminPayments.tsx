@@ -95,7 +95,7 @@ export default function AdminPayments() {
       const queryParams = new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
-        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== ''))
+        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== '' && value !== 'all'))
       });
 
       const response = await fetch(`/api/admin/payments?${queryParams}`, {
@@ -627,7 +627,7 @@ export default function AdminPayments() {
                     onClick={() => handlePaymentAction(selectedPayment.id, 'refund')}
                   >
                     <RotateCcw className="h-4 w-4 mr-2" />
-                    {getText('Process Refund', 'रिफंड प्रक्रिया')}
+                    {getText('Process Refund', 'रिफंड प्��क्रिया')}
                   </Button>
                 )}
                 {selectedPayment.status === 'failed' && (
