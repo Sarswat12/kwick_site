@@ -121,8 +121,8 @@ export default function Layout({ children }: LayoutProps) {
             <div className="col-span-1 md:col-span-2">
               <h3 className="text-2xl font-bold text-primary mb-4">KWICK</h3>
               <p className="text-gray-300 mb-4">
-                India's leading EV rental platform. Rent electric vehicles daily, weekly, or monthly. 
-                No EMI, no maintenance, unlimited battery swaps. Join the sustainable mobility revolution.
+                India's #1 electric scooter rental platform. Rent KWICK EV scooters and earn ₹15,000-₹50,000 monthly.
+                Zero fuel costs, unlimited battery swaps, 100% eco-friendly. Based in Noida Sector 112.
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-300 hover:text-primary transition-colors">
