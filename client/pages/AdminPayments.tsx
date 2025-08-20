@@ -358,7 +358,7 @@ export default function AdminPayments() {
                   <SelectValue placeholder={getText('All Status', 'सभी स्थितियां')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
+                  <SelectItem value="all">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
                   <SelectItem value="completed">{getText('Completed', 'पूर्ण')}</SelectItem>
                   <SelectItem value="pending">{getText('Pending', 'लंबित')}</SelectItem>
                   <SelectItem value="failed">{getText('Failed', 'असफल')}</SelectItem>
@@ -374,7 +374,7 @@ export default function AdminPayments() {
                   <SelectValue placeholder={getText('All Methods', 'सभी विधियां')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">{getText('All Methods', 'सभी विधियां')}</SelectItem>
+                  <SelectItem value="all">{getText('All Methods', 'सभी विधियां')}</SelectItem>
                   <SelectItem value="upi">UPI</SelectItem>
                   <SelectItem value="card">{getText('Card', 'कार्ड')}</SelectItem>
                   <SelectItem value="netbanking">{getText('Net Banking', 'नेट बैंकिंग')}</SelectItem>
@@ -564,7 +564,7 @@ export default function AdminPayments() {
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {getText('Payment Details', 'भुगत���न विवरण')}
+              {getText('Payment Details', 'भुगतान विवरण')}
             </DialogTitle>
             <DialogDescription>
               {getText('View and manage payment transaction', 'भुगतान लेनदेन देखें और प्रबंधित करें')}
