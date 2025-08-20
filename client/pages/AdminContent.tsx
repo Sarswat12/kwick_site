@@ -132,7 +132,7 @@ export default function AdminContent() {
             titleHi: 'KWICK बैटरी स्वैपिंग नेटवर्क विस्तार',
             slug: 'kwick-battery-swapping-expansion',
             content: 'We are expanding our battery swapping network...',
-            contentHi: 'हम अपने बैटरी स्वैपिंग नेटवर्क का विस्तार कर रहे ��ैं...',
+            contentHi: 'हम अपने बैटरी स्वैपिंग नेटवर्क का विस्तार कर रहे हैं...',
             excerpt: 'New battery swap stations coming to 50 more cities',
             excerptHi: '50 और शहरों में नए बैटरी स्वैप स्टेशन आ रहे हैं',
             author: 'Operations Team',
@@ -353,7 +353,7 @@ export default function AdminContent() {
             {getText('Content Management', 'सामग्री प्रबंधन')}
           </h1>
           <p className="text-gray-600 mt-1">
-            {getText('Manage blog posts and career listings', 'ब्लॉग पोस्ट और करियर लिस्टिंग का प्रबंधन क��ें')}
+            {getText('Manage blog posts and career listings', 'ब्लॉग पोस्ट और करियर लिस्टिंग का प्रबंधन करें')}
           </p>
         </div>
         <div className="flex space-x-3">
@@ -458,7 +458,7 @@ export default function AdminContent() {
           </TabsTrigger>
           <TabsTrigger value="careers" className="flex items-center space-x-2">
             <Briefcase className="h-4 w-4" />
-            <span>{getText('Career Posts', 'करियर पोस���ट')}</span>
+            <span>{getText('Career Posts', 'करियर पोस्ट')}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -495,7 +495,7 @@ export default function AdminContent() {
                       <SelectValue placeholder={getText('All Status', 'सभी स्थितियां')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
+                      <SelectItem value="all">{getText('All Status', 'सभी स���थितियां')}</SelectItem>
                       <SelectItem value="published">{getText('Published', 'प्रकाशित')}</SelectItem>
                       <SelectItem value="draft">{getText('Draft', 'मसौदा')}</SelectItem>
                       <SelectItem value="archived">{getText('Archived', 'संग्रहीत')}</SelectItem>
@@ -510,7 +510,7 @@ export default function AdminContent() {
                       <SelectValue placeholder={getText('All Categories', 'सभी श्रेणियां')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">{getText('All Categories', 'सभी श्रेणियां')}</SelectItem>
+                      <SelectItem value="all">{getText('All Categories', 'सभी श्रेणियां')}</SelectItem>
                       <SelectItem value="technology">{getText('Technology', 'प्रौद्योगिकी')}</SelectItem>
                       <SelectItem value="mobility">{getText('Mobility', 'गतिशीलता')}</SelectItem>
                       <SelectItem value="sustainability">{getText('Sustainability', 'स्थिरता')}</SelectItem>
@@ -749,7 +749,7 @@ export default function AdminContent() {
             <DialogDescription>
               {activeTab === 'blog' 
                 ? getText('Create or edit blog post content in multiple languages', 'कई भाषाओं में ब्लॉग पोस्ट सामग्री बनाएं या संपादित करें')
-                : getText('Create or edit job posting details', 'नौकरी पोस्टिंग वि���रण बनाएं या संपादित करें')
+                : getText('Create or edit job posting details', 'नौकरी पोस्टिंग विवरण बनाएं या संपादित करें')
               }
             </DialogDescription>
           </DialogHeader>
@@ -853,7 +853,7 @@ export default function AdminContent() {
                     </Select>
                   </div>
                   <div>
-                    <Label>{getText('Featured Image URL', 'फीचर्ड इमे�� URL')}</Label>
+                    <Label>{getText('Featured Image URL', 'फीचर्ड इमेज URL')}</Label>
                     <Input
                       value={(editingPost as BlogPost)?.featuredImage || ''}
                       onChange={(e) => setEditingPost(prev => ({ ...prev, featuredImage: e.target.value }))}
