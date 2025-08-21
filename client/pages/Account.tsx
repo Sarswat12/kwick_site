@@ -29,7 +29,11 @@ import {
   Download,
   Eye,
   Star,
-  Zap
+  Zap,
+  Camera,
+  Upload,
+  Image,
+  FileCheck
 } from 'lucide-react';
 
 export default function Account() {
