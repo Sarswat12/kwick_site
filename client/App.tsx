@@ -109,7 +109,7 @@ const App = () => (
             path="/blog"
             element={
               <Layout>
-                <PlaceholderPage pageName="Blog" />
+                <Blog />
               </Layout>
             }
           />
@@ -117,7 +117,15 @@ const App = () => (
             path="/careers"
             element={
               <Layout>
-                <PlaceholderPage pageName="Careers" />
+                <Careers />
+              </Layout>
+            }
+          />
+          <Route
+            path="/kyc"
+            element={
+              <Layout>
+                <KYCPage />
               </Layout>
             }
           />
