@@ -505,44 +505,132 @@ export default function Account() {
 
           {/* Payments Tab */}
           <TabsContent value="payments">
-            <Card>
-              <CardHeader>
-                <CardTitle>Payment History</CardTitle>
-                <CardDescription>
-                  View all your payment transactions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {paymentHistory.map((payment, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                          <CreditCard className="h-6 w-6 text-green-600" />
+            <div className="space-y-6">
+              {/* Payment Upload Section */}
+              <Card className="animate-fade-in">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center">
+                        <Upload className="h-5 w-5 mr-2" />
+                        Upload Payment Proof
+                      </CardTitle>
+                      <CardDescription>
+                        Upload screenshot of your payment for quick verification
+                      </CardDescription>
+                    </div>
+                    <Button
+                      onClick={() => setShowPaymentUpload(!showPaymentUpload)}
+                      className="bg-primary hover:bg-primary/90"
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Upload Payment
+                    </Button>
+                  </div>
+                </CardHeader>
+                {showPaymentUpload && (
+                  <CardContent className="space-y-4 animate-slide-up">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                      {uploadedScreenshot ? (
+                        <div className="space-y-4">
+                          <img
+                            src={uploadedScreenshot}
+                            alt="Payment screenshot"
+                            className="max-w-xs mx-auto rounded border"
+                          />
+                          <div className="flex space-x-3 justify-center">
+                            <Button
+                              onClick={submitPaymentProof}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              <FileCheck className="h-4 w-4 mr-2" />
+                              Submit for Verification
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => setUploadedScreenshot(null)}
+                            >
+                              <Camera className="h-4 w-4 mr-2" />
+                              Change Image
+                            </Button>
+                          </div>
                         </div>
+                      ) : (
                         <div>
-                          <h4 className="font-medium">{payment.description}</h4>
-                          <p className="text-sm text-gray-600">
-                            {new Date(payment.date).toLocaleDateString()} • {payment.method}
+                          <Image className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                          <p className="text-gray-600 mb-4">
+                            Upload a clear screenshot of your payment confirmation
                           </p>
-                          <p className="text-sm text-gray-600">Transaction ID: {payment.id}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-semibold">{payment.amount}</div>
-                        {getStatusBadge(payment.status)}
-                        <div className="mt-2">
-                          <Button size="sm" variant="outline">
-                            <Download className="h-3 w-3 mr-1" />
-                            Receipt
+                          <Button
+                            onClick={() => fileInputRef.current?.click()}
+                            variant="outline"
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            Choose Image
                           </Button>
                         </div>
-                      </div>
+                      )}
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">📋 Upload Guidelines</h4>
+                      <ul className="text-sm text-blue-800 space-y-1">
+                        <li>• Clear, readable screenshot showing payment details</li>
+                        <li>• Include transaction ID, amount, and date</li>
+                        <li>• JPG, PNG formats accepted (max 5MB)</li>
+                        <li>• Verification usually takes 2-4 hours</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+
+              {/* Payment History */}
+              <Card className="animate-fade-in" style={{animationDelay: '0.2s'}}>
+                <CardHeader>
+                  <CardTitle>Payment History</CardTitle>
+                  <CardDescription>
+                    View all your payment transactions
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {paymentHistory.map((payment, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 border rounded-lg card-hover">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            <CreditCard className="h-6 w-6 text-green-600" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium">{payment.description}</h4>
+                            <p className="text-sm text-gray-600">
+                              {new Date(payment.date).toLocaleDateString()} • {payment.method}
+                            </p>
+                            <p className="text-sm text-gray-600">Transaction ID: {payment.id}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-semibold">{payment.amount}</div>
+                          {getStatusBadge(payment.status)}
+                          <div className="mt-2">
+                            <Button size="sm" variant="outline">
+                              <Download className="h-3 w-3 mr-1" />
+                              Receipt
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Settings Tab */}
