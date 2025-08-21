@@ -24,6 +24,8 @@ import AdminFleet from "./pages/AdminFleet";
 import AdminContent from "./pages/AdminContent";
 import AdminSupport from "./pages/AdminSupport";
 import AdminAnalytics from "./pages/AdminAnalytics";
+import AdminPaymentManagement from "./pages/AdminPaymentManagement";
+import KYCPage from "./pages/KYCPage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import NotFound from "./pages/NotFound";
 
