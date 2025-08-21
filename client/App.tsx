@@ -180,7 +180,7 @@ const App = () => (
             path="/admin/support"
             element={
               <AdminLayout>
-                <PlaceholderPage pageName="Support Tickets" />
+                <AdminSupport />
               </AdminLayout>
             }
           />
@@ -204,7 +204,7 @@ const App = () => (
             path="/admin/analytics"
             element={
               <AdminLayout>
-                <PlaceholderPage pageName="Analytics" />
+                <AdminAnalytics />
               </AdminLayout>
             }
           />
