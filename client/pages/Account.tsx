@@ -148,6 +148,41 @@ export default function Account() {
     console.log('Profile updated:', profileData);
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // In a real app, you would upload to your server
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setUploadedScreenshot(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const submitPaymentProof = () => {
+    if (uploadedScreenshot) {
+      // Add payment proof to payment history
+      const newPayment = {
+        id: `PAY${Date.now()}`,
+        date: new Date().toISOString(),
+        description: 'Payment Proof Uploaded',
+        amount: '₹693',
+        status: 'verification_required',
+        method: 'Screenshot Upload',
+        screenshot: uploadedScreenshot
+      };
+
+      // In real app, this would be sent to backend
+      console.log('Payment proof submitted:', newPayment);
+      setShowPaymentUpload(false);
+      setUploadedScreenshot(null);
+
+      // Show success message
+      alert('Payment proof uploaded successfully! It will be verified within 24 hours.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
