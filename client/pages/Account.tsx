@@ -39,6 +39,9 @@ import {
 export default function Account() {
   const [kycStatus, setKycStatus] = useState<'pending' | 'approved' | 'rejected'>('pending');
   const [isEditing, setIsEditing] = useState(false);
+  const [showPaymentUpload, setShowPaymentUpload] = useState(false);
+  const [uploadedScreenshot, setUploadedScreenshot] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [profileData, setProfileData] = useState({
     firstName: 'John',
     lastName: 'Doe',
