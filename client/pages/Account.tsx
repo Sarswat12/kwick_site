@@ -9,11 +9,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { 
-  User, 
-  FileCheck, 
-  CreditCard, 
-  History, 
+import {
+  User,
+  FileCheck,
+  CreditCard,
+  History,
   Settings,
   Upload,
   CheckCircle,
@@ -30,10 +30,7 @@ import {
   Eye,
   Star,
   Zap,
-  Camera,
-  Upload,
-  Image,
-  FileCheck
+  Image
 } from 'lucide-react';
 
 export default function Account() {
