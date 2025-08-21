@@ -162,7 +162,7 @@ export default function AdminAnalytics() {
   const paymentMethods = [
     { method: 'UPI', percentage: 52, amount: 1480577 },
     { method: 'Credit Card', percentage: 28, amount: 797342 },
-    { method: 'Debit Card', percentage: 15, percentage: 427148 },
+    { method: 'Debit Card', percentage: 15, amount: 427148 },
     { method: 'Bank Transfer', percentage: 3, amount: 85431 },
     { method: 'Wallet', percentage: 2, amount: 57152 }
   ];
