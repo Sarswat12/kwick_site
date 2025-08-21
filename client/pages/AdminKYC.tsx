@@ -1,186 +1,182 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
-  Search,
-  Filter,
+  Search, 
+  Filter, 
+  Eye, 
+  CheckCircle, 
+  XCircle, 
+  Clock, 
+  User, 
+  FileCheck, 
+  AlertCircle,
   Download,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  FileCheck,
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  AlertTriangle,
-  ChevronLeft,
-  ChevronRight,
-  FileText,
   Upload,
-  ExternalLink
+  Edit,
+  Trash2,
+  Calendar,
+  Phone,
+  Mail,
+  MapPin,
+  IndianRupee,
+  CreditCard,
+  Home,
+  Car,
+  Image,
+  FileText,
+  Zap,
+  Shield,
+  Check,
+  X,
+  RotateCcw,
+  ExternalLink,
+  Star,
+  RefreshCw
 } from 'lucide-react';
+
+interface KYCUser {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: 'pending' | 'approved' | 'rejected' | 'incomplete';
+  submittedAt: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+  documents: KYCDocument[];
+}
 
 interface KYCDocument {
   id: string;
-  userId: string;
-  type: 'driving_license' | 'aadhaar' | 'address_proof';
-  documentUrl: string;
+  type: 'aadhaar' | 'address_proof' | 'pan_card' | 'driving_license';
+  name: string;
+  url: string;
   status: 'pending' | 'approved' | 'rejected';
+  uploadedAt: string;
   rejectionReason?: string;
-  submittedAt: string;
-  reviewedAt?: string;
-  reviewedBy?: string;
-}
-
-interface KYCApplication {
-  id: string;
-  userId: string;
-  userName: string;
-  userEmail: string;
-  userPhone: string;
-  status: 'pending' | 'approved' | 'rejected';
-  documents: KYCDocument[];
-  submittedAt: string;
-  reviewedAt?: string;
-  reviewedBy?: string;
-  notes?: string;
-}
-
-interface KYCFilters {
-  search: string;
-  status: string;
-  documentType: string;
-  dateFrom: string;
-  dateTo: string;
+  verified?: boolean;
 }
 
 export default function AdminKYC() {
-  const [applications, setApplications] = useState<KYCApplication[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<KYCFilters>({
-    search: '',
-    status: '',
-    documentType: '',
-    dateFrom: '',
-    dateTo: ''
-  });
-  const [selectedApplication, setSelectedApplication] = useState<KYCApplication | null>(null);
-  const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
-  const [reviewAction, setReviewAction] = useState<'approve' | 'reject' | null>(null);
-  const [reviewNotes, setReviewNotes] = useState('');
-  const [rejectionReason, setRejectionReason] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [selectedUser, setSelectedUser] = useState<KYCUser | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [language, setLanguage] = useState<'en' | 'hi'>('en');
+  const [rejectionReason, setRejectionReason] = useState('');
+  const [reviewNotes, setReviewNotes] = useState('');
+  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [documentToReject, setDocumentToReject] = useState<KYCDocument | null>(null);
 
-  const itemsPerPage = 10;
-
-  useEffect(() => {
-    fetchKYCApplications();
-  }, [currentPage, filters]);
-
-  const fetchKYCApplications = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('adminToken');
-      const queryParams = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: itemsPerPage.toString(),
-        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== '' && value !== 'all'))
-      });
-
-      const response = await fetch(`/api/admin/kyc?${queryParams}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setApplications(data.data);
-        setTotalPages(data.totalPages);
-      }
-    } catch (error) {
-      console.error('Failed to fetch KYC applications:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFilterChange = (key: keyof KYCFilters, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    setCurrentPage(1);
-  };
-
-  const handleReviewSubmit = async () => {
-    if (!selectedApplication || !reviewAction) return;
-
-    try {
-      const token = localStorage.getItem('adminToken');
-      const requestData: any = {
-        status: reviewAction === 'approve' ? 'approved' : 'rejected',
-        notes: reviewNotes
-      };
-
-      if (reviewAction === 'reject' && rejectionReason) {
-        requestData.rejectionReason = rejectionReason;
-      }
-
-      const response = await fetch(`/api/admin/kyc/${selectedApplication.id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+  // Mock data for KYC users
+  const [kycUsers, setKycUsers] = useState<KYCUser[]>([
+    {
+      id: 'USR001',
+      name: 'Raj Kumar',
+      email: 'raj.kumar@email.com',
+      phone: '+91 98765 43210',
+      status: 'pending',
+      submittedAt: '2024-01-20T10:30:00Z',
+      documents: [
+        {
+          id: 'DOC001',
+          type: 'aadhaar',
+          name: 'Aadhaar Card',
+          url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+          status: 'pending',
+          uploadedAt: '2024-01-20T10:30:00Z'
         },
-        body: JSON.stringify(requestData)
-      });
-
-      if (response.ok) {
-        fetchKYCApplications();
-        setIsReviewDialogOpen(false);
-        setReviewAction(null);
-        setReviewNotes('');
-        setRejectionReason('');
-        setSelectedApplication(null);
-      }
-    } catch (error) {
-      console.error('Failed to update KYC application:', error);
+        {
+          id: 'DOC002',
+          type: 'address_proof',
+          name: 'Utility Bill',
+          url: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+          status: 'pending',
+          uploadedAt: '2024-01-20T10:35:00Z'
+        },
+        {
+          id: 'DOC003',
+          type: 'pan_card',
+          name: 'PAN Card',
+          url: 'https://images.unsplash.com/photo-1554224154-22dec7ec8818?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+          status: 'pending',
+          uploadedAt: '2024-01-20T10:40:00Z'
+        },
+        {
+          id: 'DOC004',
+          type: 'driving_license',
+          name: 'Driving License',
+          url: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+          status: 'pending',
+          uploadedAt: '2024-01-20T10:45:00Z'
+        }
+      ]
+    },
+    {
+      id: 'USR002',
+      name: 'Priya Sharma',
+      email: 'priya.sharma@email.com',
+      phone: '+91 98765 43211',
+      status: 'incomplete',
+      submittedAt: '2024-01-19T14:20:00Z',
+      documents: [
+        {
+          id: 'DOC005',
+          type: 'aadhaar',
+          name: 'Aadhaar Card',
+          url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+          status: 'approved',
+          uploadedAt: '2024-01-19T14:20:00Z',
+          verified: true
+        },
+        {
+          id: 'DOC006',
+          type: 'address_proof',
+          name: 'Bank Statement',
+          url: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+          status: 'rejected',
+          uploadedAt: '2024-01-19T14:25:00Z',
+          rejectionReason: 'Document is unclear and unreadable'
+        }
+      ]
+    },
+    {
+      id: 'USR003',
+      name: 'Amit Singh',
+      email: 'amit.singh@email.com',
+      phone: '+91 98765 43212',
+      status: 'approved',
+      submittedAt: '2024-01-18T11:45:00Z',
+      reviewedAt: '2024-01-18T16:30:00Z',
+      reviewedBy: 'Admin User',
+      documents: [
+        {
+          id: 'DOC007',
+          type: 'aadhaar',
+          name: 'Aadhaar Card',
+          url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+          status: 'approved',
+          uploadedAt: '2024-01-18T11:45:00Z',
+          verified: true
+        },
+        {
+          id: 'DOC008',
+          type: 'driving_license',
+          name: 'Driving License',
+          url: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+          status: 'approved',
+          uploadedAt: '2024-01-18T11:50:00Z',
+          verified: true
+        }
+      ]
     }
-  };
-
-  const exportKYCData = () => {
-    const csvContent = [
-      ['Application ID', 'User Name', 'Email', 'Phone', 'Status', 'Submitted Date', 'Reviewed Date'],
-      ...applications.map(app => [
-        app.id,
-        app.userName,
-        app.userEmail,
-        app.userPhone,
-        app.status,
-        new Date(app.submittedAt).toLocaleDateString(),
-        app.reviewedAt ? new Date(app.reviewedAt).toLocaleDateString() : ''
-      ])
-    ].map(row => row.join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'kwick-kyc-applications.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
+  ]);
 
   const getText = (en: string, hi: string) => {
     return language === 'hi' ? hi : en;
@@ -190,7 +186,8 @@ export default function AdminKYC() {
     const variants = {
       pending: { color: 'bg-yellow-100 text-yellow-800', text: getText('Pending', 'लंबित'), icon: Clock },
       approved: { color: 'bg-green-100 text-green-800', text: getText('Approved', 'अनुमोदित'), icon: CheckCircle },
-      rejected: { color: 'bg-red-100 text-red-800', text: getText('Rejected', 'अस्वीकृत'), icon: XCircle }
+      rejected: { color: 'bg-red-100 text-red-800', text: getText('Rejected', 'अस्वीकृत'), icon: XCircle },
+      incomplete: { color: 'bg-orange-100 text-orange-800', text: getText('Incomplete', 'अधूरा'), icon: AlertCircle }
     };
     
     const variant = variants[status as keyof typeof variants] || variants.pending;
@@ -204,402 +201,276 @@ export default function AdminKYC() {
     );
   };
 
-  const getDocumentTypeLabel = (type: string) => {
-    const labels = {
-      driving_license: getText('Driving License', 'ड्राइविंग लाइसेंस'),
-      aadhaar: getText('Aadhaar Card', 'आधार कार्ड'),
-      address_proof: getText('Address Proof', 'पता प्रमा��')
+  const getDocumentIcon = (type: string) => {
+    const icons = {
+      aadhaar: CreditCard,
+      address_proof: Home,
+      pan_card: FileText,
+      driving_license: Car
     };
-    return labels[type as keyof typeof labels] || type;
+    const Icon = icons[type as keyof typeof icons] || FileText;
+    return <Icon className="h-4 w-4" />;
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-IN');
+  const getDocumentName = (type: string) => {
+    const names = {
+      aadhaar: getText('Aadhaar Card', 'आधार कार्ड'),
+      address_proof: getText('Address Proof', 'पता प्रमाण'),
+      pan_card: getText('PAN Card', 'पैन कार्ड'),
+      driving_license: getText('Driving License', 'ड्राइविंग लाइसेंस')
+    };
+    return names[type as keyof typeof names] || type;
   };
 
-  const getKYCStats = () => {
-    const total = applications.length;
-    const pending = applications.filter(app => app.status === 'pending').length;
-    const approved = applications.filter(app => app.status === 'approved').length;
-    const rejected = applications.filter(app => app.status === 'rejected').length;
-    
-    return { total, pending, approved, rejected };
+  const filteredUsers = kycUsers.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.phone.includes(searchTerm);
+    const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const stats = {
+    total: kycUsers.length,
+    pending: kycUsers.filter(u => u.status === 'pending').length,
+    approved: kycUsers.filter(u => u.status === 'approved').length,
+    rejected: kycUsers.filter(u => u.status === 'rejected').length,
+    incomplete: kycUsers.filter(u => u.status === 'incomplete').length
   };
 
-  const stats = getKYCStats();
+  const approveDocument = (userId: string, documentId: string) => {
+    setKycUsers(prev => prev.map(user => 
+      user.id === userId 
+        ? {
+            ...user,
+            documents: user.documents.map(doc => 
+              doc.id === documentId 
+                ? { ...doc, status: 'approved' as const, verified: true }
+                : doc
+            )
+          }
+        : user
+    ));
+  };
+
+  const rejectDocument = (userId: string, documentId: string, reason: string) => {
+    setKycUsers(prev => prev.map(user => 
+      user.id === userId 
+        ? {
+            ...user,
+            documents: user.documents.map(doc => 
+              doc.id === documentId 
+                ? { ...doc, status: 'rejected' as const, rejectionReason: reason }
+                : doc
+            )
+          }
+        : user
+    ));
+  };
+
+  const approveAllDocuments = (userId: string) => {
+    setKycUsers(prev => prev.map(user => 
+      user.id === userId 
+        ? {
+            ...user,
+            status: 'approved' as const,
+            reviewedAt: new Date().toISOString(),
+            reviewedBy: 'Admin User',
+            documents: user.documents.map(doc => ({ 
+              ...doc, 
+              status: 'approved' as const,
+              verified: true 
+            }))
+          }
+        : user
+    ));
+    setSelectedUser(null);
+  };
+
+  const handleDocumentReject = () => {
+    if (documentToReject && selectedUser && rejectionReason) {
+      rejectDocument(selectedUser.id, documentToReject.id, rejectionReason);
+      setShowRejectDialog(false);
+      setDocumentToReject(null);
+      setRejectionReason('');
+      // Update selected user
+      const updatedUser = kycUsers.find(u => u.id === selectedUser.id);
+      if (updatedUser) setSelectedUser(updatedUser);
+    }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
             {getText('KYC Management', 'केवाईसी प्रबंधन')}
           </h1>
           <p className="text-gray-600 mt-1">
-            {getText('Review and manage user identity verification', 'उपयोगकर्ता पहचान सत्यापन की समीक्षा और प्रबंधन करें')}
+            {getText('Review and verify user identity documents', 'उपयोगकर्ता पहचान दस्तावेजों की समीक्षा और सत्यापन करें')}
           </p>
         </div>
-        <div className="flex space-x-3">
-          <Button variant="outline" onClick={exportKYCData}>
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}>
+            {language === 'en' ? 'हिंदी' : 'English'}
+          </Button>
+          <Button className="bg-primary hover:bg-primary/90">
             <Download className="h-4 w-4 mr-2" />
             {getText('Export', 'निर्यात')}
           </Button>
-          <Button onClick={fetchKYCApplications}>
-            <FileCheck className="h-4 w-4 mr-2" />
-            {getText('Refresh', 'रीफ्रेश')}
-          </Button>
         </div>
       </div>
 
-      {/* KYC Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">{getText('Total Applications', 'कुल आवेदन')}</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-              <FileCheck className="h-6 w-6 text-blue-600" />
-            </div>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+            <div className="text-sm text-gray-600">{getText('Total Applications', 'कुल आवेदन')}</div>
           </CardContent>
         </Card>
-
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">{getText('Pending Review', 'लंबित समीक्षा')}</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
-              </div>
-              <Clock className="h-6 w-6 text-yellow-600" />
-            </div>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+            <div className="text-sm text-gray-600">{getText('Pending', 'लंबित')}</div>
           </CardContent>
         </Card>
-
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">{getText('Approved', 'अनुमोदित')}</p>
-                <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
-              </div>
-              <CheckCircle className="h-6 w-6 text-green-600" />
-            </div>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
+            <div className="text-sm text-gray-600">{getText('Approved', 'अनुमोदित')}</div>
           </CardContent>
         </Card>
-
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">{getText('Rejected', 'अस्वीकृत')}</p>
-                <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
-              </div>
-              <XCircle className="h-6 w-6 text-red-600" />
-            </div>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
+            <div className="text-sm text-gray-600">{getText('Rejected', 'अस्वीकृत')}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-orange-600">{stats.incomplete}</div>
+            <div className="text-sm text-gray-600">{getText('Incomplete', 'अधूरा')}</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Filter className="h-5 w-5 mr-2" />
-            {getText('Filters', 'फ़िल्टर')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div>
-              <Label htmlFor="search">{getText('Search', 'खोजें')}</Label>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Side - User List */}
+        <div className="lg:col-span-1 space-y-4">
+          {/* Filters */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Filter className="h-5 w-5 mr-2" />
+                {getText('Filters', 'फ़िल्टर')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  id="search"
-                  placeholder={getText('Name, email, phone...', 'नाम, ईमेल, फोन...')}
-                  value={filters.search}
-                  onChange={(e) => handleFilterChange('search', e.target.value)}
+                  placeholder={getText('Search users...', 'उपयोगकर्ता खोजें...')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
-            </div>
+              
+              <div>
+                <Label>{getText('Status', 'स्थिति')}</Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
+                    <SelectItem value="pending">{getText('Pending', 'लंबित')}</SelectItem>
+                    <SelectItem value="approved">{getText('Approved', 'अनुमोदित')}</SelectItem>
+                    <SelectItem value="rejected">{getText('Rejected', 'अस्वीकृत')}</SelectItem>
+                    <SelectItem value="incomplete">{getText('Incomplete', 'अधूरा')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
 
-            <div>
-              <Label>{getText('Status', 'स्थिति')}</Label>
-              <Select value={filters.status} onValueChange={(value) => handleFilterChange('status', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder={getText('All Status', 'सभी स्थितियां')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
-                  <SelectItem value="pending">{getText('Pending', 'लंबित')}</SelectItem>
-                  <SelectItem value="approved">{getText('Approved', 'अनुमोदित')}</SelectItem>
-                  <SelectItem value="rejected">{getText('Rejected', 'अस्वीकृत')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label>{getText('Document Type', 'दस्तावेज़ प्रकार')}</Label>
-              <Select value={filters.documentType} onValueChange={(value) => handleFilterChange('documentType', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder={getText('All Documents', 'सभी दस्तावेज़')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{getText('All Documents', 'सभी दस्तावेज़')}</SelectItem>
-                  <SelectItem value="driving_license">{getText('Driving License', 'ड्राइविंग लाइसेंस')}</SelectItem>
-                  <SelectItem value="aadhaar">{getText('Aadhaar Card', 'आधार कार्ड')}</SelectItem>
-                  <SelectItem value="address_proof">{getText('Address Proof', 'पता प्रमाण')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label>{getText('Date From', 'दिनांक से')}</Label>
-              <Input
-                type="date"
-                value={filters.dateFrom}
-                onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-              />
-            </div>
-
-            <div>
-              <Label>{getText('Date To', 'दिनांक तक')}</Label>
-              <Input
-                type="date"
-                value={filters.dateTo}
-                onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* KYC Applications Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{getText('KYC Applications', 'केवाईसी आवेदन')} ({applications.length})</CardTitle>
-          <CardDescription>
-            {getText('Review user identity verification documents', 'उपयोगकर्ता पहचान सत्यापन दस्तावेजों की समीक्षा करें')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="space-y-3">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="h-16 bg-gray-200 rounded"></div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{getText('Applicant', 'आवेदक')}</TableHead>
-                    <TableHead>{getText('Contact', 'संपर्क')}</TableHead>
-                    <TableHead>{getText('Documents', 'दस्तावेज़')}</TableHead>
-                    <TableHead>{getText('Status', 'स्थिति')}</TableHead>
-                    <TableHead>{getText('Submitted', 'जमा किया गया')}</TableHead>
-                    <TableHead>{getText('Review Date', 'समीक्षा तिथि')}</TableHead>
-                    <TableHead>{getText('Actions', 'क्रियाएं')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {applications.map((application) => (
-                    <TableRow key={application.id} className="hover:bg-gray-50">
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                            <User className="h-5 w-5 text-primary" />
-                          </div>
-                          <div>
-                            <p className="font-medium">{application.userName}</p>
-                            <p className="text-sm text-gray-500">ID: {application.userId}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center text-sm">
-                            <Mail className="h-3 w-3 mr-1 text-gray-400" />
-                            {application.userEmail}
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <Phone className="h-3 w-3 mr-1 text-gray-400" />
-                            {application.userPhone}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          {application.documents.map((doc, index) => (
-                            <div key={index} className="flex items-center justify-between text-sm">
-                              <span>{getDocumentTypeLabel(doc.type)}</span>
-                              {getStatusBadge(doc.status)}
-                            </div>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(application.status)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          <div>{formatDate(application.submittedAt)}</div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          {application.reviewedAt ? (
-                            <div>
-                              <div>{formatDate(application.reviewedAt)}</div>
-                              {application.reviewedBy && (
-                                <div className="text-xs text-gray-500">
-                                  {getText('by', 'द्वारा')} {application.reviewedBy}
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-gray-400">-</span>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedApplication(application);
-                              setIsReviewDialogOpen(true);
-                            }}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          {application.status === 'pending' && (
-                            <>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedApplication(application);
-                                  setReviewAction('approve');
-                                  setIsReviewDialogOpen(true);
-                                }}
-                                className="text-green-600 hover:text-green-700"
-                              >
-                                <CheckCircle className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedApplication(application);
-                                  setReviewAction('reject');
-                                  setIsReviewDialogOpen(true);
-                                }}
-                                className="text-red-600 hover:text-red-700"
-                              >
-                                <XCircle className="h-4 w-4" />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-
-          {/* Pagination */}
-          <div className="flex items-center justify-between mt-6">
-            <p className="text-sm text-gray-600">
-              {getText('Showing', 'दिखा रहे हैं')} {((currentPage - 1) * itemsPerPage) + 1} {getText('to', 'से')} {Math.min(currentPage * itemsPerPage, applications.length)} {getText('of', 'का')} {applications.length} {getText('applications', 'आवेदन')}
-            </p>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
+          {/* User List */}
+          <div className="space-y-3 max-h-96 overflow-y-auto">
+            {filteredUsers.map((user) => (
+              <Card 
+                key={user.id} 
+                className={`cursor-pointer transition-all hover:shadow-md ${
+                  selectedUser?.id === user.id ? 'ring-2 ring-primary bg-primary/5' : ''
+                }`}
+                onClick={() => setSelectedUser(user)}
               >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <span className="text-sm">
-                {getText('Page', 'पृष्ठ')} {currentPage} {getText('of', 'का')} {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* KYC Review Dialog */}
-      <Dialog open={isReviewDialogOpen} onOpenChange={setIsReviewDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {reviewAction ? 
-                getText(`${reviewAction === 'approve' ? 'Approve' : 'Reject'} KYC Application`, 
-                       `केवाईसी आवेदन ${reviewAction === 'approve' ? 'अनुमोदित' : 'अस्वीकार'} करें`) :
-                getText('Review KYC Application', 'केवाईसी आवेदन की समीक्षा करें')
-              }
-            </DialogTitle>
-            <DialogDescription>
-              {getText('Review user documents and approve or reject the application', 
-                      'उपयोगकर्ता दस्तावेजों की समीक्षा करें और आवेदन को अनुमोदित या अस्वीकार करें')}
-            </DialogDescription>
-          </DialogHeader>
-          
-          {selectedApplication && (
-            <div className="space-y-6">
-              {/* User Information */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">{getText('User Information', 'उपयोगकर्ता जानकारी')}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label>{getText('Name', 'नाम')}</Label>
-                      <Input value={selectedApplication.userName} readOnly />
-                    </div>
-                    <div>
-                      <Label>{getText('Email', 'ईमेल')}</Label>
-                      <Input value={selectedApplication.userEmail} readOnly />
-                    </div>
-                    <div>
-                      <Label>{getText('Phone', 'फोन')}</Label>
-                      <Input value={selectedApplication.userPhone} readOnly />
-                    </div>
-                    <div>
-                      <Label>{getText('Application ID', 'आवेदन ID')}</Label>
-                      <Input value={selectedApplication.id} readOnly />
-                    </div>
-                    <div>
-                      <Label>{getText('Current Status', 'वर्तमान स्थिति')}</Label>
-                      <div className="mt-1">
-                        {getStatusBadge(selectedApplication.status)}
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <User className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-sm">{user.name}</h3>
+                        <p className="text-xs text-gray-600">{user.email}</p>
+                        <p className="text-xs text-gray-600">{user.phone}</p>
                       </div>
                     </div>
+                    {getStatusBadge(user.status)}
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span>{getText('Submitted:', 'जमा किया:')} {new Date(user.submittedAt).toLocaleDateString()}</span>
+                    <span>{user.documents.length} {getText('docs', 'दस्तावेज़')}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Side - Document Verification */}
+        <div className="lg:col-span-2">
+          {selectedUser ? (
+            <div className="space-y-6">
+              {/* User Info */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
                     <div>
-                      <Label>{getText('Submitted Date', 'जमा करने की तारीख')}</Label>
-                      <Input value={formatDate(selectedApplication.submittedAt)} readOnly />
+                      <CardTitle className="flex items-center">
+                        <User className="h-5 w-5 mr-2" />
+                        {selectedUser.name}
+                      </CardTitle>
+                      <CardDescription>
+                        {getText('KYC Application ID:', 'केवाईसी आवेदन ID:')} {selectedUser.id}
+                      </CardDescription>
                     </div>
+                    {getStatusBadge(selectedUser.status)}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center">
+                      <Mail className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>{selectedUser.email}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Phone className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>{selectedUser.phone}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>{getText('Submitted:', 'जमा किया:')} {new Date(selectedUser.submittedAt).toLocaleDateString()}</span>
+                    </div>
+                    {selectedUser.reviewedAt && (
+                      <div className="flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-2 text-gray-500" />
+                        <span>{getText('Reviewed:', 'समीक्षित:')} {new Date(selectedUser.reviewedAt).toLocaleDateString()}</span>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -607,199 +478,225 @@ export default function AdminKYC() {
               {/* Documents */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">{getText('Submitted Documents', 'जमा किए गए दस्तावेज़')}</CardTitle>
+                  <CardTitle className="flex items-center justify-between">
+                    <span className="flex items-center">
+                      <FileCheck className="h-5 w-5 mr-2" />
+                      {getText('Submitted Documents', 'जमा किए गए दस्तावेज़')}
+                    </span>
+                    {selectedUser.documents.every(doc => doc.status === 'approved') && (
+                      <Button
+                        onClick={() => approveAllDocuments(selectedUser.id)}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        {getText('Approve All & Complete KYC', 'सभी को अनुमोदित करें और केवाईसी पूरा करें')}
+                      </Button>
+                    )}
+                  </CardTitle>
+                  <CardDescription>
+                    {getText('Review each document carefully before approval', 'अनुमोदन से पहले प्रत्येक दस्तावेज़ की सावधानीपूर्वक समीक्षा करें')}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Tabs defaultValue="all" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
-                      <TabsTrigger value="all">{getText('All', 'सभी')}</TabsTrigger>
-                      <TabsTrigger value="driving_license">{getText('License', 'लाइसेंस')}</TabsTrigger>
-                      <TabsTrigger value="aadhaar">{getText('Aadhaar', 'आधार')}</TabsTrigger>
-                      <TabsTrigger value="address_proof">{getText('Address', 'पता')}</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="all" className="space-y-4">
-                      {selectedApplication.documents.map((doc, index) => (
-                        <div key={index} className="border rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center space-x-3">
-                              <FileText className="h-5 w-5 text-gray-500" />
-                              <div>
-                                <h4 className="font-medium">{getDocumentTypeLabel(doc.type)}</h4>
-                                <p className="text-sm text-gray-500">
-                                  {getText('Submitted:', 'जमा किया गया:')} {formatDate(doc.submittedAt)}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              {getStatusBadge(doc.status)}
-                              <Button variant="outline" size="sm">
-                                <ExternalLink className="h-4 w-4 mr-1" />
-                                {getText('View', 'देखें')}
-                              </Button>
-                            </div>
-                          </div>
-                          
-                          {doc.status === 'rejected' && doc.rejectionReason && (
-                            <div className="bg-red-50 border border-red-200 rounded p-3">
-                              <p className="text-sm text-red-800">
-                                <strong>{getText('Rejection Reason:', 'अस्वीकृति कारण:')}</strong> {doc.rejectionReason}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {selectedUser.documents.map((document) => (
+                      <div key={document.id} className="border rounded-lg p-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            {getDocumentIcon(document.type)}
+                            <div>
+                              <h4 className="font-medium text-sm">{getDocumentName(document.type)}</h4>
+                              <p className="text-xs text-gray-500">
+                                {getText('Uploaded:', 'अपलोड किया गया:')} {new Date(document.uploadedAt).toLocaleDateString()}
                               </p>
                             </div>
-                          )}
+                          </div>
+                          {getStatusBadge(document.status)}
                         </div>
-                      ))}
-                    </TabsContent>
 
-                    {['driving_license', 'aadhaar', 'address_proof'].map(docType => (
-                      <TabsContent key={docType} value={docType} className="space-y-4">
-                        {selectedApplication.documents
-                          .filter(doc => doc.type === docType)
-                          .map((doc, index) => (
-                            <div key={index} className="border rounded-lg p-4">
-                              <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center space-x-3">
-                                  <FileText className="h-5 w-5 text-gray-500" />
-                                  <div>
-                                    <h4 className="font-medium">{getDocumentTypeLabel(doc.type)}</h4>
-                                    <p className="text-sm text-gray-500">
-                                      {getText('Submitted:', 'जमा किया गया:')} {formatDate(doc.submittedAt)}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  {getStatusBadge(doc.status)}
-                                  <Button variant="outline" size="sm">
-                                    <ExternalLink className="h-4 w-4 mr-1" />
-                                    {getText('View', 'देखें')}
-                                  </Button>
-                                </div>
-                              </div>
-                              
-                              <div className="bg-gray-50 rounded p-3">
-                                <img 
-                                  src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                                  alt={`${doc.type} document`}
-                                  className="w-full max-w-md mx-auto rounded"
-                                />
-                              </div>
-                            </div>
-                          ))}
-                      </TabsContent>
+                        {/* Document Image */}
+                        <div className="relative">
+                          <img 
+                            src={document.url}
+                            alt={`${document.type} document`}
+                            className="w-full h-48 object-cover rounded border"
+                          />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="absolute top-2 right-2 bg-white/90"
+                            onClick={() => window.open(document.url, '_blank')}
+                          >
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            {getText('View', 'देखें')}
+                          </Button>
+                        </div>
+
+                        {/* Rejection Reason */}
+                        {document.status === 'rejected' && document.rejectionReason && (
+                          <div className="bg-red-50 border border-red-200 rounded p-3">
+                            <p className="text-sm text-red-800">
+                              <strong>{getText('Rejection Reason:', 'अस्वी���ृति कारण:')}</strong> {document.rejectionReason}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Actions */}
+                        {document.status === 'pending' && (
+                          <div className="flex space-x-2">
+                            <Button
+                              onClick={() => approveDocument(selectedUser.id, document.id)}
+                              size="sm"
+                              className="flex-1 bg-green-600 hover:bg-green-700"
+                            >
+                              <Check className="h-3 w-3 mr-1" />
+                              {getText('Approve', 'अनुमोदित करें')}
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                setDocumentToReject(document);
+                                setShowRejectDialog(true);
+                              }}
+                              size="sm"
+                              variant="destructive"
+                              className="flex-1"
+                            >
+                              <X className="h-3 w-3 mr-1" />
+                              {getText('Reject', 'अस्वीकार करें')}
+                            </Button>
+                          </div>
+                        )}
+
+                        {document.status === 'approved' && (
+                          <div className="bg-green-50 border border-green-200 rounded p-3 text-center">
+                            <p className="text-sm text-green-800 font-medium">
+                              ✅ {getText('Verified & Approved', 'सत्यापित और अनुमोदित')}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     ))}
-                  </Tabs>
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Review Actions */}
-              {reviewAction && (
+              {/* Bulk Actions */}
+              {selectedUser.status === 'pending' && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">
-                      {reviewAction === 'approve' ? 
-                        getText('Approve Application', 'आवेदन अनुमोदित करें') :
-                        getText('Reject Application', 'आवेदन अस्वीकार करें')
-                      }
-                    </CardTitle>
+                    <CardTitle>{getText('Bulk Actions', 'बल्क एक्शन')}</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    {reviewAction === 'reject' && (
-                      <div>
-                        <Label htmlFor="rejectionReason">
-                          {getText('Rejection Reason *', 'अस्वीकृति कारण *')}
-                        </Label>
-                        <Select value={rejectionReason} onValueChange={setRejectionReason}>
-                          <SelectTrigger>
-                            <SelectValue placeholder={getText('Select reason', 'कारण चुनें')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="document_unclear">{getText('Document unclear/blurry', 'दस्तावेज़ अस्पष्ट/धुंधला')}</SelectItem>
-                            <SelectItem value="document_expired">{getText('Document expired', 'दस्तावेज़ समाप्त')}</SelectItem>
-                            <SelectItem value="document_invalid">{getText('Invalid document', 'अमान्य दस्तावेज़')}</SelectItem>
-                            <SelectItem value="information_mismatch">{getText('Information mismatch', 'जानकारी मेल नहीं खाती')}</SelectItem>
-                            <SelectItem value="incomplete_documents">{getText('Incomplete documents', 'अधूरे दस्तावेज़')}</SelectItem>
-                            <SelectItem value="other">{getText('Other', 'अन्य')}</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-
-                    <div>
-                      <Label htmlFor="reviewNotes">
-                        {getText('Review Notes', 'समीक्षा टिप्पणी')} {reviewAction === 'reject' ? '*' : getText('(Optional)', '(वैकल्पिक)')}
-                      </Label>
-                      <Textarea
-                        id="reviewNotes"
-                        placeholder={getText('Add any additional comments...', 'कोई अतिरिक्त टिप्पणी जोड़ें...')}
-                        value={reviewNotes}
-                        onChange={(e) => setReviewNotes(e.target.value)}
-                        rows={3}
-                      />
-                    </div>
-
+                  <CardContent>
                     <div className="flex space-x-3">
                       <Button
-                        onClick={handleReviewSubmit}
-                        className={reviewAction === 'approve' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}
-                        disabled={reviewAction === 'reject' && (!rejectionReason || !reviewNotes)}
+                        onClick={() => {
+                          // Approve all pending documents
+                          selectedUser.documents.forEach(doc => {
+                            if (doc.status === 'pending') {
+                              approveDocument(selectedUser.id, doc.id);
+                            }
+                          });
+                          setTimeout(() => approveAllDocuments(selectedUser.id), 500);
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
                       >
-                        {reviewAction === 'approve' ? (
-                          <>
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            {getText('Approve Application', 'आवेदन अनुमोदित करें')}
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="h-4 w-4 mr-2" />
-                            {getText('Reject Application', 'आवेदन अस्वीकार करें')}
-                          </>
-                        )}
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        {getText('Approve All Documents', 'सभी दस्तावेज़ अनुमोदित करें')}
                       </Button>
                       <Button
                         variant="outline"
                         onClick={() => {
-                          setReviewAction(null);
-                          setReviewNotes('');
-                          setRejectionReason('');
+                          setKycUsers(prev => prev.map(user => 
+                            user.id === selectedUser.id 
+                              ? { ...user, status: 'rejected' as const }
+                              : user
+                          ));
+                          setSelectedUser(null);
                         }}
+                        className="text-red-600 border-red-200 hover:bg-red-50"
                       >
-                        {getText('Cancel', 'रद्द करें')}
+                        <X className="h-4 w-4 mr-2" />
+                        {getText('Reject Application', 'आवेदन अस���वीकार करें')}
                       </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Previous Review Information */}
-              {selectedApplication.reviewedAt && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{getText('Previous Review', 'पिछली समीक्षा')}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{getText('Reviewed by:', 'द्वारा समीक्षित:')}</span>
-                        <span className="font-medium">{selectedApplication.reviewedBy}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600">{getText('Review date:', 'समीक्षा तिथि:')}</span>
-                        <span className="font-medium">{formatDate(selectedApplication.reviewedAt)}</span>
-                      </div>
-                      {selectedApplication.notes && (
-                        <div className="mt-3">
-                          <span className="text-sm text-gray-600">{getText('Notes:', 'टिप्पणी:')}</span>
-                          <div className="mt-1 p-3 bg-gray-50 rounded">
-                            <p className="text-sm">{selectedApplication.notes}</p>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </CardContent>
                 </Card>
               )}
             </div>
+          ) : (
+            <Card className="h-full flex items-center justify-center">
+              <CardContent className="text-center">
+                <FileCheck className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  {getText('Select a User', 'एक उपयोगकर्ता चुनें')}
+                </h3>
+                <p className="text-gray-600">
+                  {getText('Choose a user from the list to review their KYC documents', 'उनके केवाईसी दस्तावेजों की समीक्षा के लिए सूची से एक उपयोगकर्ता चुनें')}
+                </p>
+              </CardContent>
+            </Card>
           )}
+        </div>
+      </div>
+
+      {/* Rejection Dialog */}
+      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{getText('Reject Document', 'दस्तावेज़ अस्वीकार करें')}</DialogTitle>
+            <DialogDescription>
+              {getText('Please provide a reason for rejecting this document', 'कृपया इस दस्तावेज़ को अस्वीकार करने का कारण बताएं')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>{getText('Rejection Reason', 'अस्वीकृति कारण')}</Label>
+              <Select value={rejectionReason} onValueChange={setRejectionReason}>
+                <SelectTrigger>
+                  <SelectValue placeholder={getText('Select reason', 'कारण चुनें')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unclear">{getText('Document is unclear/blurry', 'दस्तावेज़ अस्पष्ट/धुंधला है')}</SelectItem>
+                  <SelectItem value="expired">{getText('Document has expired', 'दस्तावेज़ की अवधि समाप्त हो गई है')}</SelectItem>
+                  <SelectItem value="invalid">{getText('Invalid document', 'अमान्य दस्तावेज़')}</SelectItem>
+                  <SelectItem value="mismatch">{getText('Information does not match', 'जानकारी मेल नहीं खाती')}</SelectItem>
+                  <SelectItem value="other">{getText('Other reason', 'अन्य कारण')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {rejectionReason === 'other' && (
+              <div>
+                <Label>{getText('Custom Reason', 'कस्टम कारण')}</Label>
+                <Textarea
+                  placeholder={getText('Please specify the reason...', 'कृपया कारण बताएं...')}
+                  value={reviewNotes}
+                  onChange={(e) => setReviewNotes(e.target.value)}
+                />
+              </div>
+            )}
+            
+            <div className="flex space-x-3">
+              <Button
+                onClick={handleDocumentReject}
+                variant="destructive"
+                disabled={!rejectionReason}
+              >
+                {getText('Reject Document', 'दस्तावेज़ अस्वीकार करें')}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowRejectDialog(false);
+                  setDocumentToReject(null);
+                  setRejectionReason('');
+                  setReviewNotes('');
+                }}
+              >
+                {getText('Cancel', 'रद्द करें')}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
