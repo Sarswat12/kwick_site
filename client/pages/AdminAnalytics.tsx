@@ -167,7 +167,10 @@ export default function AdminAnalytics() {
     { method: 'Wallet', percentage: 2, amount: 57152 }
   ];
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | undefined) => {
+    if (amount === undefined || amount === null || isNaN(amount)) {
+      return '₹0';
+    }
     return `₹${amount.toLocaleString()}`;
   };
 
