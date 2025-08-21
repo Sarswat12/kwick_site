@@ -1,182 +1,272 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
-  Search,
-  Filter,
-  Download,
-  Eye,
-  Edit,
-  Ban,
-  CheckCircle,
-  XCircle,
-  MoreVertical,
-  ChevronLeft,
-  ChevronRight,
-  Users,
-  Mail,
-  Phone,
-  MapPin,
+  Search, 
+  Filter, 
+  Eye, 
+  Edit, 
+  Ban, 
+  CheckCircle, 
+  XCircle, 
+  Clock, 
+  User, 
+  Mail, 
+  Phone, 
+  MapPin, 
   Calendar,
-  Star,
-  CreditCard
+  CreditCard,
+  Car,
+  Battery,
+  Zap,
+  IndianRupee,
+  Download,
+  Upload,
+  Plus,
+  Trash2,
+  Settings,
+  UserCheck,
+  UserX,
+  History,
+  TrendingUp,
+  Award,
+  Target,
+  DollarSign,
+  Bike,
+  Shield,
+  AlertTriangle,
+  ExternalLink,
+  RefreshCw
 } from 'lucide-react';
 
 interface User {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone: string;
-  city: string;
-  status: 'active' | 'suspended' | 'blocked';
+  address: string;
+  status: 'active' | 'inactive' | 'suspended' | 'pending_kyc';
   kycStatus: 'pending' | 'approved' | 'rejected';
-  createdAt: string;
-  totalRentals: number;
+  joinedAt: string;
+  lastActive: string;
+  vehicleAssigned?: VehicleAssignment;
+  paymentHistory: PaymentRecord[];
   totalSpent: number;
+  totalRides: number;
+  earningsFromDelivery: number;
   rating: number;
+  tier: 'bronze' | 'silver' | 'gold' | 'platinum';
 }
 
-interface UserFilters {
-  search: string;
-  status: string;
-  kycStatus: string;
-  city: string;
-  dateFrom: string;
-  dateTo: string;
+interface VehicleAssignment {
+  vehicleId: string;
+  vehicleNumber: string;
+  vehicleModel: string;
+  controllerId: string;
+  assignedAt: string;
+  status: 'active' | 'maintenance' | 'returned';
+  batteryLevel: number;
+  lastLocation: string;
+  totalDistance: number;
+}
+
+interface PaymentRecord {
+  id: string;
+  amount: number;
+  type: 'rental' | 'security_deposit' | 'fine' | 'refund';
+  status: 'completed' | 'pending' | 'failed' | 'refunded';
+  method: 'upi' | 'card' | 'bank_transfer' | 'wallet';
+  date: string;
+  description: string;
+  transactionId: string;
 }
 
 export default function AdminUsers() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<UserFilters>({
-    search: '',
-    status: '',
-    kycStatus: '',
-    city: '',
-    dateFrom: '',
-    dateTo: ''
-  });
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [language, setLanguage] = useState<'en' | 'hi'>('en');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [kycFilter, setKycFilter] = useState<string>('all');
+  const [showVehicleDialog, setShowVehicleDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [newVehicleId, setNewVehicleId] = useState('');
+  const [newControllerId, setNewControllerId] = useState('');
 
-  const itemsPerPage = 10;
-
-  useEffect(() => {
-    fetchUsers();
-  }, [currentPage, filters]);
-
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('adminToken');
-      const queryParams = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: itemsPerPage.toString(),
-        ...Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== '' && value !== 'all'))
-      });
-
-      const response = await fetch(`/api/admin/users?${queryParams}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(data.data);
-        setTotalPages(data.totalPages);
-      }
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFilterChange = (key: keyof UserFilters, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    setCurrentPage(1); // Reset to first page when filtering
-  };
-
-  const handleUserAction = async (userId: string, action: 'suspend' | 'activate' | 'block') => {
-    try {
-      const token = localStorage.getItem('adminToken');
-      const statusMap = {
-        suspend: 'suspended',
-        activate: 'active',
-        block: 'blocked'
-      };
-
-      const response = await fetch(`/api/admin/users/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+  // Mock data for users
+  const [users, setUsers] = useState<User[]>([
+    {
+      id: 'USR001',
+      name: 'Raj Kumar',
+      email: 'raj.kumar@email.com',
+      phone: '+91 98765 43210',
+      address: 'Sector 112, Noida, Uttar Pradesh',
+      status: 'active',
+      kycStatus: 'approved',
+      joinedAt: '2024-01-15T10:30:00Z',
+      lastActive: '2024-01-20T14:30:00Z',
+      vehicleAssigned: {
+        vehicleId: 'VEH001',
+        vehicleNumber: 'UP16 EV 1234',
+        vehicleModel: 'KWICK Elite',
+        controllerId: 'CTRL001',
+        assignedAt: '2024-01-16T09:00:00Z',
+        status: 'active',
+        batteryLevel: 85,
+        lastLocation: 'Sector 18, Noida',
+        totalDistance: 2847
+      },
+      paymentHistory: [
+        {
+          id: 'PAY001',
+          amount: 2000,
+          type: 'security_deposit',
+          status: 'completed',
+          method: 'upi',
+          date: '2024-01-15T10:30:00Z',
+          description: 'Security Deposit',
+          transactionId: 'TXN123456789'
         },
-        body: JSON.stringify({
-          status: statusMap[action]
-        })
-      });
-
-      if (response.ok) {
-        fetchUsers(); // Refresh the list
-      }
-    } catch (error) {
-      console.error('Failed to update user:', error);
+        {
+          id: 'PAY002',
+          amount: 693,
+          type: 'rental',
+          status: 'completed',
+          method: 'card',
+          date: '2024-01-16T09:00:00Z',
+          description: 'Weekly Rental - KWICK Elite',
+          transactionId: 'TXN123456790'
+        },
+        {
+          id: 'PAY003',
+          amount: 693,
+          type: 'rental',
+          status: 'completed',
+          method: 'upi',
+          date: '2024-01-20T09:00:00Z',
+          description: 'Weekly Rental - KWICK Elite',
+          transactionId: 'TXN123456791'
+        }
+      ],
+      totalSpent: 3386,
+      totalRides: 47,
+      earningsFromDelivery: 18500,
+      rating: 4.8,
+      tier: 'gold'
+    },
+    {
+      id: 'USR002',
+      name: 'Priya Sharma',
+      email: 'priya.sharma@email.com',
+      phone: '+91 98765 43211',
+      address: 'Sector 62, Noida, Uttar Pradesh',
+      status: 'inactive',
+      kycStatus: 'pending',
+      joinedAt: '2024-01-18T14:20:00Z',
+      lastActive: '2024-01-19T16:45:00Z',
+      paymentHistory: [
+        {
+          id: 'PAY004',
+          amount: 2000,
+          type: 'security_deposit',
+          status: 'completed',
+          method: 'bank_transfer',
+          date: '2024-01-18T14:20:00Z',
+          description: 'Security Deposit',
+          transactionId: 'TXN123456792'
+        }
+      ],
+      totalSpent: 2000,
+      totalRides: 0,
+      earningsFromDelivery: 0,
+      rating: 0,
+      tier: 'bronze'
+    },
+    {
+      id: 'USR003',
+      name: 'Amit Singh',
+      email: 'amit.singh@email.com',
+      phone: '+91 98765 43212',
+      address: 'Sector 101, Noida, Uttar Pradesh',
+      status: 'active',
+      kycStatus: 'approved',
+      joinedAt: '2024-01-10T11:45:00Z',
+      lastActive: '2024-01-20T18:20:00Z',
+      vehicleAssigned: {
+        vehicleId: 'VEH002',
+        vehicleNumber: 'UP16 EV 5678',
+        vehicleModel: 'KWICK Elite',
+        controllerId: 'CTRL002',
+        assignedAt: '2024-01-11T10:00:00Z',
+        status: 'active',
+        batteryLevel: 92,
+        lastLocation: 'Sector 18 Metro, Noida',
+        totalDistance: 4523
+      },
+      paymentHistory: [
+        {
+          id: 'PAY005',
+          amount: 2000,
+          type: 'security_deposit',
+          status: 'completed',
+          method: 'upi',
+          date: '2024-01-10T11:45:00Z',
+          description: 'Security Deposit',
+          transactionId: 'TXN123456793'
+        },
+        {
+          id: 'PAY006',
+          amount: 2970,
+          type: 'rental',
+          status: 'completed',
+          method: 'card',
+          date: '2024-01-11T10:00:00Z',
+          description: 'Monthly Rental - KWICK Elite',
+          transactionId: 'TXN123456794'
+        }
+      ],
+      totalSpent: 4970,
+      totalRides: 83,
+      earningsFromDelivery: 32400,
+      rating: 4.9,
+      tier: 'platinum'
     }
-  };
-
-  const exportUsers = () => {
-    // In a real application, this would generate and download a CSV/Excel file
-    const csvContent = [
-      ['Name', 'Email', 'Phone', 'City', 'Status', 'KYC Status', 'Total Rentals', 'Total Spent'],
-      ...users.map(user => [
-        `${user.firstName} ${user.lastName}`,
-        user.email,
-        user.phone,
-        user.city,
-        user.status,
-        user.kycStatus,
-        user.totalRentals.toString(),
-        user.totalSpent.toString()
-      ])
-    ].map(row => row.join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'kwick-users.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
-  const getText = (en: string, hi: string) => {
-    return language === 'hi' ? hi : en;
-  };
+  ]);
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      active: { color: 'bg-green-100 text-green-800', text: getText('Active', 'सक्रिय') },
-      suspended: { color: 'bg-yellow-100 text-yellow-800', text: getText('Suspended', 'निलंबित') },
-      blocked: { color: 'bg-red-100 text-red-800', text: getText('Blocked', 'अवरुद्ध') },
-      pending: { color: 'bg-orange-100 text-orange-800', text: getText('Pending', 'लंबित') },
-      approved: { color: 'bg-green-100 text-green-800', text: getText('Approved', 'अनुमोदित') },
-      rejected: { color: 'bg-red-100 text-red-800', text: getText('Rejected', 'अस्वीकृत') }
+      active: { color: 'bg-green-100 text-green-800', text: 'Active', icon: CheckCircle },
+      inactive: { color: 'bg-gray-100 text-gray-800', text: 'Inactive', icon: Clock },
+      suspended: { color: 'bg-red-100 text-red-800', text: 'Suspended', icon: Ban },
+      pending_kyc: { color: 'bg-yellow-100 text-yellow-800', text: 'Pending KYC', icon: AlertTriangle }
+    };
+    
+    const variant = variants[status as keyof typeof variants] || variants.inactive;
+    const IconComponent = variant.icon;
+    
+    return (
+      <Badge className={variant.color}>
+        <IconComponent className="h-3 w-3 mr-1" />
+        {variant.text}
+      </Badge>
+    );
+  };
+
+  const getKYCBadge = (status: string) => {
+    const variants = {
+      pending: { color: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
+      approved: { color: 'bg-green-100 text-green-800', text: 'Approved' },
+      rejected: { color: 'bg-red-100 text-red-800', text: 'Rejected' }
     };
     
     const variant = variants[status as keyof typeof variants] || variants.pending;
+    
     return (
       <Badge className={variant.color}>
         {variant.text}
@@ -184,392 +274,644 @@ export default function AdminUsers() {
     );
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(amount);
+  const getTierBadge = (tier: string) => {
+    const variants = {
+      bronze: { color: 'bg-amber-100 text-amber-800', text: 'Bronze' },
+      silver: { color: 'bg-gray-100 text-gray-800', text: 'Silver' },
+      gold: { color: 'bg-yellow-100 text-yellow-800', text: 'Gold' },
+      platinum: { color: 'bg-purple-100 text-purple-800', text: 'Platinum' }
+    };
+    
+    const variant = variants[tier as keyof typeof variants] || variants.bronze;
+    
+    return (
+      <Badge className={variant.color}>
+        <Award className="h-3 w-3 mr-1" />
+        {variant.text}
+      </Badge>
+    );
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-IN');
+  const getPaymentStatusBadge = (status: string) => {
+    const variants = {
+      completed: { color: 'bg-green-100 text-green-800', text: 'Completed' },
+      pending: { color: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
+      failed: { color: 'bg-red-100 text-red-800', text: 'Failed' },
+      refunded: { color: 'bg-blue-100 text-blue-800', text: 'Refunded' }
+    };
+    
+    const variant = variants[status as keyof typeof variants] || variants.pending;
+    
+    return (
+      <Badge className={variant.color}>
+        {variant.text}
+      </Badge>
+    );
   };
 
-  const cities = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Hyderabad', 'Pune', 'Kolkata'];
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.phone.includes(searchTerm) ||
+                         user.id.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+    const matchesKYC = kycFilter === 'all' || user.kycStatus === kycFilter;
+    return matchesSearch && matchesStatus && matchesKYC;
+  });
+
+  const stats = {
+    total: users.length,
+    active: users.filter(u => u.status === 'active').length,
+    inactive: users.filter(u => u.status === 'inactive').length,
+    suspended: users.filter(u => u.status === 'suspended').length,
+    withVehicles: users.filter(u => u.vehicleAssigned).length,
+    totalRevenue: users.reduce((sum, u) => sum + u.totalSpent, 0),
+    avgRating: users.filter(u => u.rating > 0).reduce((sum, u) => sum + u.rating, 0) / users.filter(u => u.rating > 0).length || 0
+  };
+
+  const assignVehicle = () => {
+    if (!selectedUser || !newVehicleId || !newControllerId) return;
+
+    const newAssignment: VehicleAssignment = {
+      vehicleId: newVehicleId,
+      vehicleNumber: `UP16 EV ${Math.random().toString().substr(2, 4)}`,
+      vehicleModel: 'KWICK Elite',
+      controllerId: newControllerId,
+      assignedAt: new Date().toISOString(),
+      status: 'active',
+      batteryLevel: 100,
+      lastLocation: 'KWICK Hub - Sector 112',
+      totalDistance: 0
+    };
+
+    setUsers(prev => prev.map(user => 
+      user.id === selectedUser.id 
+        ? { ...user, vehicleAssigned: newAssignment, status: 'active' as const }
+        : user
+    ));
+
+    setShowVehicleDialog(false);
+    setNewVehicleId('');
+    setNewControllerId('');
+    
+    // Update selected user
+    const updatedUser = users.find(u => u.id === selectedUser.id);
+    if (updatedUser) setSelectedUser({ ...updatedUser, vehicleAssigned: newAssignment });
+  };
+
+  const unassignVehicle = (userId: string) => {
+    setUsers(prev => prev.map(user => 
+      user.id === userId 
+        ? { ...user, vehicleAssigned: undefined }
+        : user
+    ));
+    
+    if (selectedUser?.id === userId) {
+      setSelectedUser({ ...selectedUser, vehicleAssigned: undefined });
+    }
+  };
+
+  const updateUserStatus = (userId: string, status: string) => {
+    setUsers(prev => prev.map(user => 
+      user.id === userId 
+        ? { ...user, status: status as any }
+        : user
+    ));
+    
+    if (selectedUser?.id === userId) {
+      setSelectedUser({ ...selectedUser, status: status as any });
+    }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            {getText('User Management', 'उपयोगकर्ता प्रबंधन')}
-          </h1>
-          <p className="text-gray-600 mt-1">
-            {getText('Manage and monitor all KWICK users', 'सभी KWICK उपयोगकर्ताओं का प्रबंधन और निगरानी करें')}
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+          <p className="text-gray-600 mt-1">Manage users, vehicle assignments, and payment history</p>
         </div>
-        <div className="flex space-x-3">
-          <Button variant="outline" onClick={exportUsers}>
+        <div className="flex items-center space-x-3">
+          <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
-            {getText('Export', 'निर्यात')}
+            Export
           </Button>
-          <Button>
-            <Users className="h-4 w-4 mr-2" />
-            {getText('Add User', 'उपयोगकर्ता जोड़ें')}
+          <Button className="bg-primary hover:bg-primary/90">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
           </Button>
         </div>
       </div>
 
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Filter className="h-5 w-5 mr-2" />
-            {getText('Filters', 'फ़िल्टर')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="lg:col-span-2">
-              <Label htmlFor="search">{getText('Search', 'खोजें')}</Label>
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+            <div className="text-sm text-gray-600">Total Users</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">{stats.active}</div>
+            <div className="text-sm text-gray-600">Active</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-gray-600">{stats.inactive}</div>
+            <div className="text-sm text-gray-600">Inactive</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-red-600">{stats.suspended}</div>
+            <div className="text-sm text-gray-600">Suspended</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-purple-600">{stats.withVehicles}</div>
+            <div className="text-sm text-gray-600">With Vehicles</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-orange-600">₹{stats.totalRevenue.toLocaleString()}</div>
+            <div className="text-sm text-gray-600">Total Revenue</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-2xl font-bold text-yellow-600">{stats.avgRating.toFixed(1)}</div>
+            <div className="text-sm text-gray-600">Avg Rating</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Side - User List */}
+        <div className="lg:col-span-1 space-y-4">
+          {/* Filters */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center text-lg">
+                <Filter className="h-5 w-5 mr-2" />
+                Filters
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  id="search"
-                  placeholder={getText('Search by name, email...', 'नाम, ईमेल से खोजें...')}
-                  value={filters.search}
-                  onChange={(e) => handleFilterChange('search', e.target.value)}
+                  placeholder="Search users..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
-            </div>
+              
+              <div>
+                <Label>Status</Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                    <SelectItem value="suspended">Suspended</SelectItem>
+                    <SelectItem value="pending_kyc">Pending KYC</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div>
-              <Label>{getText('Status', 'स्थिति')}</Label>
-              <Select value={filters.status} onValueChange={(value) => handleFilterChange('status', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder={getText('All Status', 'सभी स्थितियां')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{getText('All Status', 'सभी स्थितियां')}</SelectItem>
-                  <SelectItem value="active">{getText('Active', 'सक्रिय')}</SelectItem>
-                  <SelectItem value="suspended">{getText('Suspended', 'निलंबित')}</SelectItem>
-                  <SelectItem value="blocked">{getText('Blocked', 'अवरुद्ध')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+              <div>
+                <Label>KYC Status</Label>
+                <Select value={kycFilter} onValueChange={setKycFilter}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All KYC</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
 
-            <div>
-              <Label>{getText('KYC Status', 'केवाईसी स्थिति')}</Label>
-              <Select value={filters.kycStatus} onValueChange={(value) => handleFilterChange('kycStatus', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder={getText('All KYC', 'सभी केवाईसी')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{getText('All KYC', 'सभी केवाईसी')}</SelectItem>
-                  <SelectItem value="pending">{getText('Pending', 'लंबित')}</SelectItem>
-                  <SelectItem value="approved">{getText('Approved', 'अनुमोदित')}</SelectItem>
-                  <SelectItem value="rejected">{getText('Rejected', 'अस्वीकृत')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label>{getText('City', 'शहर')}</Label>
-              <Select value={filters.city} onValueChange={(value) => handleFilterChange('city', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder={getText('All Cities', 'सभी शहर')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{getText('All Cities', 'सभी शहर')}</SelectItem>
-                  {cities.map(city => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label>{getText('Date From', 'दिनांक से')}</Label>
-              <Input
-                type="date"
-                value={filters.dateFrom}
-                onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-              />
-            </div>
+          {/* User List */}
+          <div className="space-y-3 max-h-96 overflow-y-auto">
+            {filteredUsers.map((user) => (
+              <Card 
+                key={user.id} 
+                className={`cursor-pointer transition-all hover:shadow-md ${
+                  selectedUser?.id === user.id ? 'ring-2 ring-primary bg-primary/5' : ''
+                }`}
+                onClick={() => setSelectedUser(user)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <User className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-sm">{user.name}</h3>
+                        <p className="text-xs text-gray-600">{user.email}</p>
+                        <p className="text-xs text-gray-600">{user.phone}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col space-y-1">
+                      {getStatusBadge(user.status)}
+                      {getTierBadge(user.tier)}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span>Joined: {new Date(user.joinedAt).toLocaleDateString()}</span>
+                    <span>₹{user.totalSpent.toLocaleString()}</span>
+                  </div>
+                  
+                  {user.vehicleAssigned && (
+                    <div className="mt-2 flex items-center text-xs text-blue-600">
+                      <Car className="h-3 w-3 mr-1" />
+                      <span>{user.vehicleAssigned.vehicleNumber}</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Users Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{getText('Users', 'उपयोगकर्ता')} ({users.length})</CardTitle>
-          <CardDescription>
-            {getText('Manage user accounts and their status', 'उपयोगकर्���ा खातों और उनकी स्थिति का प्रबंधन करें')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="space-y-3">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="h-12 bg-gray-200 rounded"></div>
-                </div>
-              ))}
+        {/* Right Side - User Details */}
+        <div className="lg:col-span-2">
+          {selectedUser ? (
+            <div className="space-y-6">
+              {/* User Info */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center">
+                        <User className="h-5 w-5 mr-2" />
+                        {selectedUser.name}
+                      </CardTitle>
+                      <CardDescription>User ID: {selectedUser.id}</CardDescription>
+                    </div>
+                    <div className="flex space-x-2">
+                      {getStatusBadge(selectedUser.status)}
+                      {getKYCBadge(selectedUser.kycStatus)}
+                      {getTierBadge(selectedUser.tier)}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center">
+                      <Mail className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>{selectedUser.email}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Phone className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>{selectedUser.phone}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <MapPin className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>{selectedUser.address}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>Joined: {new Date(selectedUser.joinedAt).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>Last Active: {new Date(selectedUser.lastActive).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <TrendingUp className="h-4 w-4 mr-2 text-gray-500" />
+                      <span>Total Rides: {selectedUser.totalRides}</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex space-x-3">
+                    <Button
+                      onClick={() => setShowEditDialog(true)}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <Edit className="h-4 w-4 mr-1" />
+                      Edit User
+                    </Button>
+                    <Select onValueChange={(value) => updateUserStatus(selectedUser.id, value)}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="inactive">Inactive</SelectItem>
+                        <SelectItem value="suspended">Suspended</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <div className="text-xl font-bold text-green-600">₹{selectedUser.totalSpent.toLocaleString()}</div>
+                    <div className="text-xs text-gray-600">Total Spent</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <div className="text-xl font-bold text-blue-600">{selectedUser.totalRides}</div>
+                    <div className="text-xs text-gray-600">Total Rides</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <div className="text-xl font-bold text-purple-600">₹{selectedUser.earningsFromDelivery.toLocaleString()}</div>
+                    <div className="text-xs text-gray-600">Delivery Earnings</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <div className="text-xl font-bold text-yellow-600">{selectedUser.rating}/5</div>
+                    <div className="text-xs text-gray-600">Rating</div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Tabs defaultValue="vehicle" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="vehicle">Vehicle Info</TabsTrigger>
+                  <TabsTrigger value="payments">Payment History</TabsTrigger>
+                  <TabsTrigger value="activity">Activity Log</TabsTrigger>
+                </TabsList>
+
+                {/* Vehicle Assignment Tab */}
+                <TabsContent value="vehicle" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center">
+                          <Car className="h-5 w-5 mr-2" />
+                          Vehicle Assignment
+                        </CardTitle>
+                        {!selectedUser.vehicleAssigned ? (
+                          <Button
+                            onClick={() => setShowVehicleDialog(true)}
+                            size="sm"
+                            className="bg-primary hover:bg-primary/90"
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Assign Vehicle
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => unassignVehicle(selectedUser.id)}
+                            size="sm"
+                            variant="destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Unassign
+                          </Button>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {selectedUser.vehicleAssigned ? (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label className="text-sm text-gray-600">Vehicle Number</Label>
+                              <div className="font-medium">{selectedUser.vehicleAssigned.vehicleNumber}</div>
+                            </div>
+                            <div>
+                              <Label className="text-sm text-gray-600">Model</Label>
+                              <div className="font-medium">{selectedUser.vehicleAssigned.vehicleModel}</div>
+                            </div>
+                            <div>
+                              <Label className="text-sm text-gray-600">Controller ID</Label>
+                              <div className="font-medium">{selectedUser.vehicleAssigned.controllerId}</div>
+                            </div>
+                            <div>
+                              <Label className="text-sm text-gray-600">Status</Label>
+                              <Badge className="bg-green-100 text-green-800 ml-2">
+                                {selectedUser.vehicleAssigned.status}
+                              </Badge>
+                            </div>
+                            <div>
+                              <Label className="text-sm text-gray-600">Battery Level</Label>
+                              <div className="flex items-center">
+                                <Battery className="h-4 w-4 mr-1 text-green-500" />
+                                <span className="font-medium">{selectedUser.vehicleAssigned.batteryLevel}%</span>
+                              </div>
+                            </div>
+                            <div>
+                              <Label className="text-sm text-gray-600">Total Distance</Label>
+                              <div className="font-medium">{selectedUser.vehicleAssigned.totalDistance} km</div>
+                            </div>
+                            <div className="col-span-2">
+                              <Label className="text-sm text-gray-600">Last Location</Label>
+                              <div className="font-medium flex items-center">
+                                <MapPin className="h-4 w-4 mr-1 text-gray-500" />
+                                {selectedUser.vehicleAssigned.lastLocation}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-blue-50 p-4 rounded-lg">
+                            <h4 className="font-medium text-blue-900 mb-2">Vehicle Health</h4>
+                            <div className="grid grid-cols-3 gap-4 text-sm">
+                              <div className="text-center">
+                                <div className="text-lg font-bold text-green-600">Good</div>
+                                <div className="text-gray-600">Engine Status</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="text-lg font-bold text-green-600">85%</div>
+                                <div className="text-gray-600">Battery Health</div>
+                              </div>
+                              <div className="text-center">
+                                <div className="text-lg font-bold text-yellow-600">Due</div>
+                                <div className="text-gray-600">Next Service</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <Car className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                          <p className="text-gray-600">No vehicle assigned to this user</p>
+                          <Button
+                            onClick={() => setShowVehicleDialog(true)}
+                            className="mt-4 bg-primary hover:bg-primary/90"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Assign Vehicle
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Payment History Tab */}
+                <TabsContent value="payments" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <CreditCard className="h-5 w-5 mr-2" />
+                        Payment History
+                      </CardTitle>
+                      <CardDescription>
+                        Complete payment records from day one
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {selectedUser.paymentHistory.map((payment) => (
+                          <div key={payment.id} className="flex items-center justify-between p-4 border rounded-lg">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <IndianRupee className="h-5 w-5 text-blue-600" />
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-sm">{payment.description}</h4>
+                                <p className="text-xs text-gray-600">
+                                  {new Date(payment.date).toLocaleDateString()} • {payment.method.toUpperCase()}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  TXN: {payment.transactionId}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-semibold">₹{payment.amount.toLocaleString()}</div>
+                              {getPaymentStatusBadge(payment.status)}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      <div className="mt-6 pt-4 border-t">
+                        <div className="flex justify-between text-sm">
+                          <span className="font-medium">Total Spent:</span>
+                          <span className="font-bold text-lg">₹{selectedUser.totalSpent.toLocaleString()}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Activity Log Tab */}
+                <TabsContent value="activity" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <History className="h-5 w-5 mr-2" />
+                        Recent Activity
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-3 p-3 bg-green-50 rounded">
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                          <div className="text-sm">
+                            <span className="font-medium">Payment completed</span> - Weekly rental
+                            <div className="text-xs text-gray-500">2 hours ago</div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded">
+                          <Zap className="h-4 w-4 text-blue-600" />
+                          <div className="text-sm">
+                            <span className="font-medium">Battery swapped</span> - Sector 18 Station
+                            <div className="text-xs text-gray-500">5 hours ago</div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded">
+                          <MapPin className="h-4 w-4 text-gray-600" />
+                          <div className="text-sm">
+                            <span className="font-medium">Trip completed</span> - 12.5 km delivery
+                            <div className="text-xs text-gray-500">1 day ago</div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{getText('User', 'उपयोगकर्ता')}</TableHead>
-                    <TableHead>{getText('Contact', 'संपर्क')}</TableHead>
-                    <TableHead>{getText('Location', 'स्थान')}</TableHead>
-                    <TableHead>{getText('Status', 'स्थिति')}</TableHead>
-                    <TableHead>{getText('KYC', 'केवाईसी')}</TableHead>
-                    <TableHead>{getText('Activity', 'गतिविधि')}</TableHead>
-                    <TableHead>{getText('Actions', 'क्रियाएं')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                            <span className="text-sm font-medium text-primary">
-                              {user.firstName[0]}{user.lastName[0]}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="font-medium">{user.firstName} {user.lastName}</p>
-                            <p className="text-sm text-gray-500">{getText('Member since', 'सदस्य बने')} {formatDate(user.createdAt)}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center text-sm">
-                            <Mail className="h-3 w-3 mr-1 text-gray-400" />
-                            {user.email}
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <Phone className="h-3 w-3 mr-1 text-gray-400" />
-                            {user.phone}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center text-sm">
-                          <MapPin className="h-3 w-3 mr-1 text-gray-400" />
-                          {user.city}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(user.status)}
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(user.kycStatus)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center text-sm">
-                            <CreditCard className="h-3 w-3 mr-1 text-gray-400" />
-                            {user.totalRentals} {getText('rentals', 'किराया')}
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <Star className="h-3 w-3 mr-1 text-yellow-400" />
-                            {user.rating.toFixed(1)} {getText('rating', '���ेटिंग')}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {formatCurrency(user.totalSpent)} {getText('spent', 'खर्च')}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setIsEditDialogOpen(true);
-                            }}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          {user.status === 'active' ? (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleUserAction(user.id, 'suspend')}
-                            >
-                              <Ban className="h-4 w-4 text-yellow-600" />
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleUserAction(user.id, 'activate')}
-                            >
-                              <CheckCircle className="h-4 w-4 text-green-600" />
-                            </Button>
-                          )}
-                          {user.status !== 'blocked' && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleUserAction(user.id, 'block')}
-                            >
-                              <XCircle className="h-4 w-4 text-red-600" />
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <Card className="h-full flex items-center justify-center">
+              <CardContent className="text-center">
+                <User className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Select a User</h3>
+                <p className="text-gray-600">Choose a user from the list to view their details and manage their account</p>
+              </CardContent>
+            </Card>
           )}
+        </div>
+      </div>
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between mt-6">
-            <p className="text-sm text-gray-600">
-              {getText('Showing', 'दिखा रहे हैं')} {((currentPage - 1) * itemsPerPage) + 1} {getText('to', 'से')} {Math.min(currentPage * itemsPerPage, users.length)} {getText('of', 'का')} {users.length} {getText('users', 'उपयोगकर्ता')}
-            </p>
-            <div className="flex items-center space-x-2">
+      {/* Vehicle Assignment Dialog */}
+      <Dialog open={showVehicleDialog} onOpenChange={setShowVehicleDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Assign Vehicle</DialogTitle>
+            <DialogDescription>
+              Assign a vehicle and controller to {selectedUser?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Vehicle ID</Label>
+              <Input
+                placeholder="Enter vehicle ID (e.g., VEH003)"
+                value={newVehicleId}
+                onChange={(e) => setNewVehicleId(e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Controller ID</Label>
+              <Input
+                placeholder="Enter controller ID (e.g., CTRL003)"
+                value={newControllerId}
+                onChange={(e) => setNewControllerId(e.target.value)}
+              />
+            </div>
+            <div className="flex space-x-3">
               <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
+                onClick={assignVehicle}
+                className="flex-1 bg-primary hover:bg-primary/90"
+                disabled={!newVehicleId || !newControllerId}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <Car className="h-4 w-4 mr-2" />
+                Assign Vehicle
               </Button>
-              <span className="text-sm">
-                {getText('Page', 'पृष्ठ')} {currentPage} {getText('of', 'का')} {totalPages}
-              </span>
               <Button
                 variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
+                onClick={() => {
+                  setShowVehicleDialog(false);
+                  setNewVehicleId('');
+                  setNewControllerId('');
+                }}
+                className="flex-1"
               >
-                <ChevronRight className="h-4 w-4" />
+                Cancel
               </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* User Details Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {getText('User Details', 'उपयोगकर्ता विवरण')}
-            </DialogTitle>
-            <DialogDescription>
-              {getText('View and manage user information', 'उपयोगकर्ता की जानकारी देखें और प्रबंधित करें')}
-            </DialogDescription>
-          </DialogHeader>
-          
-          {selectedUser && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>{getText('First Name', 'प्रथम नाम')}</Label>
-                  <Input value={selectedUser.firstName} readOnly />
-                </div>
-                <div>
-                  <Label>{getText('Last Name', 'अंतिम नाम')}</Label>
-                  <Input value={selectedUser.lastName} readOnly />
-                </div>
-                <div>
-                  <Label>{getText('Email', 'ईमेल')}</Label>
-                  <Input value={selectedUser.email} readOnly />
-                </div>
-                <div>
-                  <Label>{getText('Phone', 'फोन')}</Label>
-                  <Input value={selectedUser.phone} readOnly />
-                </div>
-                <div>
-                  <Label>{getText('City', 'शहर')}</Label>
-                  <Input value={selectedUser.city} readOnly />
-                </div>
-                <div>
-                  <Label>{getText('Member Since', 'सदस्य बने')}</Label>
-                  <Input value={formatDate(selectedUser.createdAt)} readOnly />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-4 border rounded">
-                  <p className="text-2xl font-bold text-primary">{selectedUser.totalRentals}</p>
-                  <p className="text-sm text-gray-600">{getText('Total Rentals', 'कुल किराया')}</p>
-                </div>
-                <div className="text-center p-4 border rounded">
-                  <p className="text-2xl font-bold text-green-600">{formatCurrency(selectedUser.totalSpent)}</p>
-                  <p className="text-sm text-gray-600">{getText('Total Spent', 'कुल खर्च')}</p>
-                </div>
-                <div className="text-center p-4 border rounded">
-                  <p className="text-2xl font-bold text-yellow-600">{selectedUser.rating.toFixed(1)}/5.0</p>
-                  <p className="text-sm text-gray-600">{getText('Rating', 'रेटिंग')}</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <Label>{getText('Current Status', 'वर्तमान स्थ��ति')}</Label>
-                  <div className="mt-1">
-                    {getStatusBadge(selectedUser.status)}
-                  </div>
-                </div>
-                <div>
-                  <Label>{getText('KYC Status', 'केवाईसी स्थिति')}</Label>
-                  <div className="mt-1">
-                    {getStatusBadge(selectedUser.kycStatus)}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex space-x-3">
-                {selectedUser.status === 'active' ? (
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      handleUserAction(selectedUser.id, 'suspend');
-                      setIsEditDialogOpen(false);
-                    }}
-                  >
-                    {getText('Suspend User', 'उपयोगकर्ता को निलंबित करें')}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      handleUserAction(selectedUser.id, 'activate');
-                      setIsEditDialogOpen(false);
-                    }}
-                  >
-                    {getText('Activate User', 'उपयोगकर्ता को ���क्रिय करें')}
-                  </Button>
-                )}
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    handleUserAction(selectedUser.id, 'block');
-                    setIsEditDialogOpen(false);
-                  }}
-                >
-                  {getText('Block User', 'उपयोगकर्ता को अवरुद्ध करें')}
-                </Button>
-              </div>
-            </div>
-          )}
         </DialogContent>
       </Dialog>
     </div>
