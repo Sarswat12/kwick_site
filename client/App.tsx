@@ -26,6 +26,8 @@ import AdminSupport from "./pages/AdminSupport";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminPaymentManagement from "./pages/AdminPaymentManagement";
 import KYCPage from "./pages/KYCPage";
+import Blog from "./pages/Blog";
+import Careers from "./pages/Careers";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import NotFound from "./pages/NotFound";
 
